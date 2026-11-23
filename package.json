@@ -1,0 +1,13 @@
+{
+  "name": "jakupan-feature-board",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A small, read-only GitHub PR progress board with owner verification checklists",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
