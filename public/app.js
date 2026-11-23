@@ -235,7 +235,7 @@ function featureBody(f) {
       <div>
         <div class="section-head"><h3 class="section-title amber">${ICON.check}내 확인</h3>
           <span class="section-meta amber">${checkMeta}</span></div>
-        ${f.checks.length ? `<div class="rows">${f.checks.map((c) => checkRow(f, c, !done)).join('')}</div>` : '<span class="empty-text">확인 항목이 아직 없습니다.</span>'}
+        ${f.checks.length ? `<div class="rows check-list" data-checks="${esc(f.id)}">${f.checks.map((c) => checkRow(f, c, !done)).join('')}</div>` : '<span class="empty-text">확인 항목이 아직 없습니다.</span>'}
       </div>
     </div>
     ${done
@@ -271,6 +271,7 @@ function renderList() {
     return;
   }
   list.innerHTML = features.map(featureItem).join('');
+  fitCheckLists(list);
 }
 
 function render() {
@@ -278,11 +279,40 @@ function render() {
   renderList();
 }
 
+// The 내 확인 list shows about 8 items; the rest scrolls with the wheel (scrollbar hidden).
+const VISIBLE_CHECKS = 8;
+
+function updateFade(list) {
+  const more = list.scrollHeight - list.scrollTop - list.clientHeight > 2;
+  list.classList.toggle('fade-bottom', more);
+  list.classList.toggle('fade-top', list.scrollTop > 2);
+}
+
+function fitCheckLists(root = document) {
+  root.querySelectorAll('.check-list').forEach((list) => {
+    list.style.maxHeight = '';
+    const items = list.children;
+    if (items.length > VISIBLE_CHECKS) {
+      const last = items[VISIBLE_CHECKS - 1];
+      // .check-list is position: relative, so offsetTop is measured from the list itself.
+      list.style.maxHeight = `${last.offsetTop + last.offsetHeight}px`;
+    }
+    updateFade(list);
+  });
+}
+
 function rerenderFeature(id) {
   const feature = current()?.features.find((f) => f.id === id);
   const element = document.querySelector(`.feature[data-id="${CSS.escape(id)}"]`);
   if (!feature || !element) return render();
+  const scrollTop = element.querySelector('.check-list')?.scrollTop || 0;
   element.outerHTML = featureItem(feature);
+  const fresh = document.querySelector(`.feature[data-id="${CSS.escape(id)}"]`);
+  if (fresh) {
+    fitCheckLists(fresh);
+    const list = fresh.querySelector('.check-list');
+    if (list) { list.scrollTop = scrollTop; updateFade(list); }
+  }
   renderChrome();
 }
 
@@ -391,6 +421,12 @@ function init() {
   $('#feature-list').addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && event.target.matches('[data-note]')) event.target.nextElementSibling?.click();
   });
+
+  $('#feature-list').addEventListener('scroll', (event) => {
+    if (event.target.classList?.contains('check-list')) updateFade(event.target);
+  }, true);
+  let resizeTimer;
+  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => fitCheckLists(), 150); });
 
   api('/api/health').then((health) => { state.tokenConfigured = health.githubTokenConfigured; }).catch(() => {});
   render();
