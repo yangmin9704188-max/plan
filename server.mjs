@@ -2,6 +2,8 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { StateStore, InputError } from './lib/state.mjs';
 import { createGithubClient } from './lib/github.mjs';
 import { createBoard } from './lib/board.mjs';
@@ -9,6 +11,7 @@ import { isValidRepo } from './lib/features.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PUBLIC = resolve(ROOT, 'public');
+const execFileAsync = promisify(execFile);
 
 function json(res, status, value) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -112,14 +115,29 @@ export function createAppServer({
   return createServer(handler);
 }
 
+// Falls back to the GitHub CLI login so no separate token is needed.
+// The token stays in memory only; the dashboard still makes read-only calls.
+export async function resolveToken(env = process.env, run = execFileAsync) {
+  if (env.GITHUB_TOKEN) return { token: env.GITHUB_TOKEN, source: '.env 토큰' };
+  if (env.GITHUB_TOKEN_FROM_GH === '0') return { token: '', source: '' };
+  try {
+    const { stdout } = await run('gh', ['auth', 'token'], { timeout: 10_000, windowsHide: true });
+    const token = stdout.trim();
+    return token ? { token, source: 'gh 로그인' } : { token: '', source: '' };
+  } catch {
+    return { token: '', source: '' };
+  }
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { process.loadEnvFile?.(join(ROOT, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   const port = Number(process.env.PORT || '4400');
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT는 1~65535 범위여야 합니다.');
   const source = sourceFromEnv();
-  createAppServer({ token: process.env.GITHUB_TOKEN || '', source }).listen(port, '127.0.0.1', () => {
+  const { token, source: tokenSource } = await resolveToken();
+  createAppServer({ token, source }).listen(port, '127.0.0.1', () => {
     console.log(`작업판 개발 대시보드: http://127.0.0.1:${port}`);
     console.log('기능 파일:', source.localDir || `${source.repo}/${source.dir} (${source.ref})`);
-    console.log('GitHub 연결:', process.env.GITHUB_TOKEN ? '개인 토큰 사용' : '공개 저장소만 조회 가능');
+    console.log('GitHub 연결:', token ? tokenSource : '토큰 없음 · 공개 저장소만 조회 가능 (gh auth login 또는 .env의 GITHUB_TOKEN)');
   });
 }
