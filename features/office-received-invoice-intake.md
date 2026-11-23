@@ -54,7 +54,7 @@ repo: yangmin9704188-max/jakupan_office_web
 
 - PR01 접수 초안·원본 연결·수동 검산·기존 업체 지급 등록 | branch: codex/office-received-invoice-pr01-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web
 - PR02 선택한 PDF·이미지·본문의 Hive AI 분석·원문 근거·비교 적용·사용량 연결 | branch: codex/office-received-invoice-pr02-ai-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR03 거래처 제출 링크 발급·외부 제출·만료·철회·접수 결과 | branch: codex/office-received-invoice-pr03-submission-link | repo: yangmin9704188-max/jakupan_office_web
+- PR03 거래처 제출 링크 발급·외부 제출·만료·철회·접수 결과 | branch: codex/office-received-invoice-pr03-submission-link | repo: yangmin9704188-max/jakupan_office_web | pr: 237
 - PR04 업체별 전용 이메일 수신주소·본문·첨부 접수·중복 및 실패 복구 | branch: codex/office-received-invoice-pr04-inbound-email | repo: yangmin9704188-max/jakupan_office_web
 - PR05 Gmail 후보 메타데이터 수집·사용자 선택 분석·수신 중지·갱신 및 복구 | branch: codex/office-received-invoice-pr05-gmail-selection | repo: yangmin9704188-max/jakupan_office_web
 - PR06 HWP·HWPX·XLSX 변환·표 추출·원문 근거·실패 보완 | branch: codex/office-received-invoice-pr06-document-formats | repo: yangmin9704188-max/jakupan_office_web
