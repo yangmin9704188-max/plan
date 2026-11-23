@@ -13,7 +13,14 @@ at the start of repository work, then this file and `REPOSITORY_MAP.md`.
    - `title`: 기능 이름
    - `products`: 쉼표로 구분, 여러 개 가능 (Office, Worker, Works 등 새 이름도 가능)
    - `repo`: 개발 Step의 기본 `owner/repo`
-3. `## 기획`: 왜, 누구를 위해, 어떤 의도로 만드는지 자유 텍스트. 칸을 나누지 않는다.
+3. `## 기획`: 대표가 읽는 글이다. 아래 `###` 소제목을 이 순서로 쓴다.
+   - `### 누구를 위해` — 누가, 어떤 상황에서 쓰는지 1~2줄
+   - `### 왜` — 지금 무엇이 불편하거나 위험한지 2~3줄
+   - `### 완성되면` — 사용자가 새로 할 수 있게 되는 것, 목록 3~6개
+   - `### 화면` — 메뉴 경로와 탭 구성
+   - `### 지켜야 할 규칙` — 금액·중복·덮어쓰기 금지 같은 업무 규칙, 목록 (대시보드에서 접혀 있음)
+   - `### 이번에 안 하는 것` — 범위 밖, 목록 (대시보드에서 접혀 있음)
+   - **넣지 않는 것**: PR·브랜치 연결 상태, 개발 계획서 링크, PR 단계 설명, "개발 중 이 파일을 고친다" 같은 작업 메모. 이런 내용은 제품 저장소의 개발 문서와 이 `AGENTS.md`에 둔다.
 4. `## 개발 계획`: Step 하나당 목록 한 줄. 순서가 Step 번호다.
    - `- 제목 | branch: feat/x` — 브랜치로 PR을 정확히 찾는다 (유사 제목 매칭 없음)
    - `- 제목 | branch: feat/x | repo: owner/other` — 다른 저장소
@@ -33,7 +40,7 @@ at the start of repository work, then this file and `REPOSITORY_MAP.md`.
 - Local state (`data/state.json`) holds only the owner's check results (`pending` / `pass` / `issue` + note) and completion.
 - Feature status is just 미완료 / 완료, set by the owner. Never infer completion from merged PRs.
 - Completed features are not looked up on refresh, so the dashboard stays fast as they accumulate.
-- Store `GITHUB_TOKEN` in local `.env`; never in source, frontend, or repository.
+- Token: `GITHUB_TOKEN` in local `.env`, else the `gh auth token` login held in memory. Never in source, frontend, or repository.
 - Keep the service bound to `127.0.0.1`.
 - No ROVENTRA dependency and no ROVENTRA workflow gates.
 
