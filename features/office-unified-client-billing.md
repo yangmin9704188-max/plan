@@ -59,7 +59,7 @@ repo: yangmin9704188-max/jakupan_office_web
 
 - PR01 청구 유형·계약/회차 식별과 공통 목록·필터 구조 정리 | branch: codex/office-billing-pr01-unified-list-20261123 | repo: yangmin9704188-max/jakupan_office_web
 - PR02 공사·용역 내역 입력·초안 저장·청구 생성·중복 보호·고객용 문서 출력 | branch: codex/office-billing-pr02-itemized-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR03 인력·공사 청구 준비 통합·필터별 집계·상세 왕복과 디자인 인계 확인 | branch: codex/office-billing-pr03-preparation-20261123 | repo: yangmin9704188-max/jakupan_office_web
+- PR03 인력·공사 청구 준비 통합·필터별 집계·상세 왕복과 디자인 인계 확인 | branch: codex/office-billing-pr03-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web
 - PR04 확정한 Gemini 디자인 적용과 최종 화면 검수 | branch: codex/office-billing-pr04-gemini-design-20261124 | repo: yangmin9704188-max/jakupan_office_web
 
 ## 확인 항목
