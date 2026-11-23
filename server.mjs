@@ -7,6 +7,7 @@ import { promisify } from 'node:util';
 import { StateStore, InputError } from './lib/state.mjs';
 import { createGithubClient } from './lib/github.mjs';
 import { createBoard } from './lib/board.mjs';
+import { createMenuBoard } from './lib/menu-board.mjs';
 import { isValidRepo } from './lib/features.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -49,14 +50,25 @@ export function sourceFromEnv(env = process.env) {
   return { repo, dir: env.FEATURES_DIR || 'features', ref: env.FEATURES_REF || 'main' };
 }
 
+// 메뉴별 기능 카드: Office 저장소의 docs/feature-cards (개발 브랜치 기준).
+export function cardsSourceFromEnv(env = process.env) {
+  if (env.CARDS_LOCAL_DIR) return { localDir: resolve(ROOT, env.CARDS_LOCAL_DIR) };
+  const repo = env.CARDS_REPO || 'yangmin9704188-max/jakupan_office_web';
+  if (!isValidRepo(repo)) throw new Error('CARDS_REPO는 owner/repo 형식이어야 합니다.');
+  return { repo, dir: env.CARDS_DIR || 'docs/feature-cards', ref: env.CARDS_REF || 'codex/office-performance-investigation-20261119' };
+}
+
 export function createAppServer({
   statePath = join(ROOT, 'data', 'state.json'),
   token = process.env.GITHUB_TOKEN || '',
   fetchImpl,
-  source = sourceFromEnv()
+  source = sourceFromEnv(),
+  cardsSource = cardsSourceFromEnv()
 } = {}) {
   const github = createGithubClient({ token, fetchImpl });
-  const board = createBoard({ github, state: new StateStore(statePath), source });
+  const store = new StateStore(statePath);
+  const board = createBoard({ github, state: store, source });
+  const menuBoard = createMenuBoard({ github, state: store, source: cardsSource });
   const assets = {
     '/': ['index.html', 'text/html; charset=utf-8'],
     '/app.js': ['app.js', 'text/javascript; charset=utf-8'],
@@ -80,6 +92,18 @@ export function createAppServer({
       if (method === 'POST' && pathname === '/api/refresh') {
         await board.refresh();
         return json(res, 200, await board.view(url.searchParams.get('view') === 'done' ? 'done' : 'active'));
+      }
+      if (method === 'GET' && pathname === '/api/menus') {
+        return json(res, 200, await menuBoard.view());
+      }
+      if (method === 'POST' && pathname === '/api/menus/refresh') {
+        await menuBoard.refresh();
+        return json(res, 200, await menuBoard.view());
+      }
+      const cardCheck = pathname.match(/^\/api\/cards\/([^/]+)\/checks\/([^/]+)$/);
+      if (method === 'PATCH' && cardCheck) {
+        const saved = await menuBoard.setCheck(decodeURIComponent(cardCheck[1]), decodeURIComponent(cardCheck[2]), await bodyJson(req));
+        return json(res, 200, { check: saved });
       }
       const check = pathname.match(/^\/api\/features\/([^/]+)\/checks\/([^/]+)$/);
       if (method === 'PATCH' && check) {
@@ -134,10 +158,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const port = Number(process.env.PORT || '4400');
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT는 1~65535 범위여야 합니다.');
   const source = sourceFromEnv();
+  const cardsSource = cardsSourceFromEnv();
   const { token, source: tokenSource } = await resolveToken();
-  createAppServer({ token, source }).listen(port, '127.0.0.1', () => {
+  createAppServer({ token, source, cardsSource }).listen(port, '127.0.0.1', () => {
     console.log(`작업판 개발 대시보드: http://127.0.0.1:${port}`);
     console.log('기능 파일:', source.localDir || `${source.repo}/${source.dir} (${source.ref})`);
+    console.log('기능 카드:', cardsSource.localDir || `${cardsSource.repo}/${cardsSource.dir} (${cardsSource.ref})`);
     console.log('GitHub 연결:', token ? tokenSource : '토큰 없음 · 공개 저장소만 조회 가능 (gh auth login 또는 .env의 GITHUB_TOKEN)');
   });
 }

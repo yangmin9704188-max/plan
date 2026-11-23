@@ -257,6 +257,14 @@ a:hover { text-decoration: underline; }
 .status.red { color: #fca5a5; background: var(--red-bg); border-color: var(--red-line); }
 .status.amber { color: #fcd34d; background: var(--amber-bg); border-color: var(--amber-line); }
 
+.check-list {
+  position: relative; overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.check-list::-webkit-scrollbar { display: none; }
+.check-list.fade-bottom { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); }
+.check-list.fade-top { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px); mask-image: linear-gradient(to bottom, transparent, #000 28px); }
+.check-list.fade-top.fade-bottom { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 .check { padding: 8px 10px; border-radius: 6px; background: var(--container); border: 1px solid var(--line-soft); }
 .check.pass { border-color: rgba(16, 185, 129, 0.3); }
 .check.issue { border-color: var(--red-line); background: rgba(127, 29, 29, 0.18); }
@@ -304,7 +312,7 @@ a:hover { text-decoration: underline; }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 
 @media (max-width: 1100px) {
-  .columns { grid-template-columns: 1fr; }
+  .columns { grid-template-columns: minmax(0, 1fr); }
   .feature-hint { display: none; }
 }
 @media (max-width: 760px) {
@@ -328,3 +336,18 @@ a:hover { text-decoration: underline; }
   .step { flex-direction: column; align-items: flex-start; }
   .check-top { flex-direction: column; }
 }
+
+/* 메뉴별 기능 (Office 기능 카드) */
+.tab.toggle { border: 1px dashed var(--line); }
+.tab.toggle.active { border-style: solid; border-color: var(--green-line); background: var(--green-bg); color: #6ee7b7; }
+.menu-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.menu-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 2px; }
+.menu-head h2 { margin: 0; font-size: 16px; font-weight: 700; color: var(--text-strong); }
+.menu-sub { margin: 6px 2px 0; font-size: 12px; font-weight: 600; color: var(--text-muted, #94a3b8); }
+.card-id { flex: none; font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--primary-text); }
+.card-grid { display: grid; gap: 12px; margin-bottom: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.policy-chip { padding: 3px 8px; border-radius: 999px; border: 1px solid var(--blue-line); background: var(--blue-bg); color: #c7d2fe; font-size: 12px; cursor: help; }
+.history, .api-list { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13px; }
+.h-date { font-variant-numeric: tabular-nums; color: var(--text-strong); }
+.h-kind { color: var(--primary-text); font-weight: 600; }
