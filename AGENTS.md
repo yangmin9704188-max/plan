@@ -49,6 +49,8 @@ at the start of repository work, then this file and `REPOSITORY_MAP.md`.
 - `features/`: GPT-written feature files (`_`-prefixed files are ignored)
 - `server.mjs`: HTTP routing, local-only guard, static serving, env config
 - `lib/features.mjs`: feature Markdown parser
+- `lib/cards.mjs`: copy of Office `scripts/feature-cards-lib.mjs` (built-feature cards); change both together
+- `lib/menu-board.mjs`: menu view over Office `docs/feature-cards`, card checks stored as `card:<ID>`
 - `lib/github.mjs`: read-only GitHub folder reading and PR status
 - `lib/board.mjs`: manual sync snapshot and active/done views
 - `lib/state.mjs`: owner check/completion JSON store

@@ -23,7 +23,10 @@ const ICON = {
 
 const state = {
   view: 'active',
-  data: { active: null, done: null },
+  data: { active: null, done: null, menus: null },
+  audience: '전체',
+  recentOnly: false,
+  uncheckedOnly: false,
   product: '전체',
   search: '',
   open: new Set(),
@@ -82,7 +85,179 @@ function formatTime(iso, withDate = false) {
     : date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 }
 
+// ---------- 메뉴별 기능 (Office docs/feature-cards) ----------
+
+const CARD_STATUS = { '준비 중': '', '개발 중': 'blue', '병합': 'green', '배포됨': 'green' };
+const RECENT_DAYS = 7;
+
+function isRecent(card) {
+  const latest = card.history[0]?.date;
+  if (!latest) return false;
+  return (Date.now() - Date.parse(`${latest}T00:00:00+09:00`)) / 86_400_000 <= RECENT_DAYS;
+}
+
+function cardCounts(card) {
+  return {
+    pass: card.checks.filter((c) => c.result === 'pass').length,
+    issue: card.checks.filter((c) => c.result === 'issue').length,
+    total: card.checks.length,
+  };
+}
+
+function needsCheck(card) {
+  const c = cardCounts(card);
+  return c.total > 0 && c.pass + c.issue < c.total;
+}
+
+function visibleMenus() {
+  const data = state.data.menus;
+  if (!data) return [];
+  const keyword = state.search.trim().toLocaleLowerCase('ko');
+  return data.menus.map((menu) => ({
+    ...menu,
+    cards: menu.cards.filter((card) =>
+      (state.audience === '전체' || card.audience.includes(state.audience)) &&
+      (!state.recentOnly || isRecent(card)) &&
+      (!state.uncheckedOnly || needsCheck(card) || cardCounts(card).issue > 0) &&
+      (!keyword || `${card.id} ${card.title} ${card.location} ${menu.menu} ${card.apis.map((a) => a.path).join(' ')}`.toLocaleLowerCase('ko').includes(keyword))),
+  })).filter((menu) => menu.cards.length);
+}
+
+function renderMenusChrome(data) {
+  const cards = data?.menus.flatMap((m) => m.cards) || [];
+  $('#count-menus').textContent = data ? cards.length : '·';
+  $('#page-title').textContent = '메뉴별 기능';
+  $('#page-subtitle').textContent = '화면별로 지금 되는 기능, 최근 바뀐 것, 확인할 것을 봅니다. (Office 기능 카드)';
+  if (data?.source) {
+    $('#source-label').textContent = data.source.label;
+    $('#source-chip').href = data.source.url || '#';
+    $('#source-dot').className = `dot ${data.sourceError || data.problems.length ? 'warn' : 'ok'}`;
+  }
+  $('#sync-time').textContent = data?.syncedAt ? `마지막 조회 ${formatTime(data.syncedAt)}` : '';
+  const built = cards.filter((c) => c.status !== '준비 중');
+  const issues = cards.filter((c) => cardCounts(c).issue > 0).length;
+  $('#kpis').innerHTML = [
+    `<span class="kpi"><span>기능</span><strong>${built.length}</strong>개</span>`,
+    `<span class="kpi"><span>준비 중</span><strong>${cards.length - built.length}</strong>개</span>`,
+    `<span class="kpi green"><span class="dot"></span>최근 ${RECENT_DAYS}일 변경 <strong>${cards.filter(isRecent).length}</strong></span>`,
+    `<span class="kpi amber"><span class="dot"></span>확인 남음 <strong>${cards.filter(needsCheck).length}</strong></span>`,
+    issues ? `<span class="kpi red"><span class="dot"></span>문제 <strong>${issues}</strong></span>` : '',
+  ].join('');
+  const audiences = new Map();
+  for (const c of cards) for (const a of c.audience) audiences.set(a, (audiences.get(a) || 0) + 1);
+  if (state.audience !== '전체' && !audiences.has(state.audience)) state.audience = '전체';
+  const tabs = [['전체', cards.length], ...audiences.entries()];
+  $('#product-tabs').innerHTML = tabs.map(([name, count]) =>
+    `<button type="button" role="tab" class="tab ${state.audience === name ? 'active' : ''}" aria-selected="${state.audience === name}" data-audience="${esc(name)}">${esc(name)} (${count})</button>`).join('') +
+    `<button type="button" class="tab toggle ${state.recentOnly ? 'active' : ''}" aria-pressed="${state.recentOnly}" data-toggle="recentOnly">최근 ${RECENT_DAYS}일 변경</button>` +
+    `<button type="button" class="tab toggle ${state.uncheckedOnly ? 'active' : ''}" aria-pressed="${state.uncheckedOnly}" data-toggle="uncheckedOnly">확인 남음·문제</button>`;
+  $('#search').placeholder = '기능 ID, 이름, 화면 위치, API 검색';
+  const notices = [];
+  if (data?.sourceError) notices.push(`기능 카드를 읽지 못했습니다: ${esc(data.sourceError)}`);
+  if (data?.problems.length) notices.push(`카드 형식 오류 ${data.problems.length}건: ${data.problems.slice(0, 3).map(esc).join(' · ')}`);
+  $('#notices').innerHTML = notices.map((n) => `<div class="notice">${n}</div>`).join('');
+}
+
+function cardBody(card, policies) {
+  const policyChips = card.policies.map((id) => {
+    const p = policies.get(id);
+    return `<span class="policy-chip" title="${esc(p ? `${p.rule}\n근거: ${p.basis}` : '정책 카드 없음')}">${esc(id)}${p ? ` · ${esc(p.title)}` : ''}</span>`;
+  }).join('');
+  const history = card.history.map((h) => `<li><span class="h-date">${esc(h.date)}</span> <span class="h-kind">${esc(h.kind)}</span> ${h.prs.map((n) => `<a class="pr-link" href="https://github.com/yangmin9704188-max/jakupan_office_web/pull/${n}" target="_blank" rel="noopener noreferrer">#${n}</a>`).join(' ')} ${esc(h.detail.replace(/#\d+\s*/g, ''))}</li>`).join('');
+  const counts = cardCounts(card);
+  return `<div class="feature-body">
+    <div class="card card-grid">
+      <div><div class="plan-label">화면 위치</div><div>${esc(card.location)}</div></div>
+      ${card.note ? `<div><div class="plan-label">메모</div><div>${esc(card.note)}</div></div>` : ''}
+      ${policyChips ? `<div><div class="plan-label">정책</div><div class="chips">${policyChips}</div></div>` : ''}
+      ${history ? `<div><div class="plan-label">이력</div><ul class="history">${history}</ul></div>` : ''}
+      ${card.apis.length ? `<details class="plan-fold"><summary>API ${card.apis.length}개</summary><ul class="api-list">${card.apis.map((a) => `<li><code>${esc(a.method || '')} ${esc(a.path || a.text)}</code>${a.note ? ` — ${esc(a.note)}` : ''}</li>`).join('')}</ul></details>` : ''}
+      ${card.data.length ? `<details class="plan-fold"><summary>데이터 ${card.data.length}개</summary><ul class="api-list">${card.data.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
+      ${card.performance.length ? `<div><div class="plan-label">성능</div><ul class="history">${card.performance.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>` : ''}
+    </div>
+    <div>
+      <div class="section-head"><h3 class="section-title amber">${ICON.check}내 확인</h3>
+        <span class="section-meta amber">${counts.pass} / ${counts.total} 통과${counts.issue ? ` · 문제 ${counts.issue}` : ''}</span></div>
+      ${card.checks.length ? `<div class="rows check-list">${card.checks.map((c) => checkRow({ id: card.id }, c, true).replaceAll('data-action="check"', 'data-action="card-check"').replaceAll('data-action="note"', 'data-action="card-note"')).join('')}</div>` : '<span class="empty-text">아직 만들어지지 않은 기능입니다.</span>'}
+    </div>
+  </div>`;
+}
+
+function cardItem(card, policies) {
+  const opened = state.open.has(`menus:${card.id}`);
+  const counts = cardCounts(card);
+  const tone = CARD_STATUS[card.status] ?? '';
+  return `<article class="feature card-item ${opened ? 'open' : ''} ${counts.issue ? 'has-issue' : ''}" data-id="${esc(card.id)}">
+    <button type="button" class="feature-head" data-action="card-toggle" data-feature="${esc(card.id)}" aria-expanded="${opened}">
+      <div class="head-left"><span class="card-id">${esc(card.id)}</span><span class="feature-title">${esc(card.title)}</span>
+        ${card.audience.map((a) => `<span class="${tagClass(a)}">${esc(a)}</span>`).join('')}</div>
+      <div class="head-right">
+        ${isRecent(card) ? `<span class="status green">${esc(card.history[0].date.slice(5))} ${esc(card.history[0].kind)}</span>` : ''}
+        ${counts.total ? `<span class="summary-chip">${counts.pass}/${counts.total} 통과</span>` : ''}
+        <span class="status ${tone}">${esc(card.status)}</span>${ICON.chevron}</div>
+    </button>
+    ${opened ? cardBody(card, policies) : ''}
+  </article>`;
+}
+
+function renderMenus() {
+  const data = state.data.menus;
+  const list = $('#feature-list');
+  if (!data) { list.innerHTML = '<div class="empty">불러오는 중…</div>'; return; }
+  const menus = visibleMenus();
+  if (!menus.length) {
+    list.innerHTML = data.menus.length
+      ? '<div class="empty"><b>조건에 맞는 기능이 없습니다.</b>대상 탭이나 필터를 바꿔보세요.</div>'
+      : '<div class="empty"><b>기능 카드가 아직 없습니다.</b>Office 저장소 docs/feature-cards에 메뉴 파일이 올라오면 새로고침했을 때 나타납니다.</div>';
+    return;
+  }
+  const policies = new Map(data.policies.map((p) => [p.id, p]));
+  list.innerHTML = menus.map((menu) => {
+    const built = menu.cards.filter((c) => c.status !== '준비 중');
+    const pending = menu.cards.filter((c) => c.status === '준비 중');
+    return `<section class="menu-group">
+      <div class="menu-head"><h2>${esc(menu.menu)}</h2>
+        ${menu.url ? `<a class="source-link" href="${esc(menu.url)}" target="_blank" rel="noopener noreferrer">카드 원문 ↗</a>` : ''}</div>
+      ${built.map((c) => cardItem(c, policies)).join('')}
+      ${pending.length ? `<div class="menu-sub">준비 중 ${pending.length}</div>${pending.map((c) => cardItem(c, policies)).join('')}` : ''}
+    </section>`;
+  }).join('');
+  fitCheckLists(list);
+}
+
+async function loadMenus({ refresh = false } = {}) {
+  if (refresh) setBusy(true);
+  try {
+    state.data.menus = refresh ? await api('/api/menus/refresh', { method: 'POST' }) : await api('/api/menus');
+    if (refresh) toast('기능 카드를 다시 읽었습니다.');
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    if (refresh) setBusy(false);
+    if (state.view === 'menus') render();
+  }
+}
+
+async function saveCardCheck(cardId, checkId, result, note) {
+  const card = state.data.menus?.menus.flatMap((m) => m.cards).find((c) => c.id === cardId);
+  const check = card?.checks.find((c) => c.id === checkId);
+  if (!check) return;
+  const previous = { result: check.result, note: check.note };
+  Object.assign(check, { result, note });
+  render();
+  try {
+    await api(`/api/cards/${encodeURIComponent(cardId)}/checks/${encodeURIComponent(checkId)}`, { method: 'PATCH', body: { result, note } });
+  } catch (error) {
+    Object.assign(check, previous);
+    render();
+    toast(error.message);
+  }
+}
+
 function renderChrome() {
+  document.querySelectorAll('.nav-item').forEach((item) => item.classList.toggle('active', item.dataset.view === state.view));
+  if (state.view === 'menus') return renderMenusChrome(state.data.menus);
+  $('#search').placeholder = '기능명, 기획 내용 검색';
   const data = current();
   const done = state.view === 'done';
   document.querySelectorAll('.nav-item').forEach((item) => item.classList.toggle('active', item.dataset.view === state.view));
@@ -276,7 +451,7 @@ function renderList() {
 
 function render() {
   renderChrome();
-  renderList();
+  if (state.view === 'menus') renderMenus(); else renderList();
 }
 
 // The 내 확인 list shows about 8 items; the rest scrolls with the wheel (scrollbar hidden).
@@ -382,23 +557,50 @@ async function setCompleted(featureId, complete) {
 }
 
 function init() {
-  $('#refresh-button').addEventListener('click', () => { if (!state.busy) load(state.view, { refresh: true }); });
+  $('#refresh-button').addEventListener('click', () => {
+    if (state.busy) return;
+    if (state.view === 'menus') loadMenus({ refresh: true }); else load(state.view, { refresh: true });
+  });
   document.querySelectorAll('.nav-item').forEach((item) => item.addEventListener('click', () => {
     if (state.view === item.dataset.view) return;
     state.view = item.dataset.view;
     state.product = '전체';
     render();
-    if (!state.data[state.view]) load(state.view);
+    if (!state.data[state.view]) {
+      if (state.view === 'menus') loadMenus(); else load(state.view);
+    }
   }));
-  $('#search').addEventListener('input', (event) => { state.search = event.target.value; renderList(); });
+  $('#search').addEventListener('input', (event) => {
+    state.search = event.target.value;
+    if (state.view === 'menus') renderMenus(); else renderList();
+  });
   $('#product-tabs').addEventListener('click', (event) => {
     const tab = event.target.closest('[data-product]');
-    if (tab) { state.product = tab.dataset.product; render(); }
+    if (tab) { state.product = tab.dataset.product; render(); return; }
+    const audience = event.target.closest('[data-audience]');
+    if (audience) { state.audience = audience.dataset.audience; render(); return; }
+    const toggle = event.target.closest('[data-toggle]');
+    if (toggle) { state[toggle.dataset.toggle] = !state[toggle.dataset.toggle]; render(); }
   });
   $('#feature-list').addEventListener('click', (event) => {
     const button = event.target.closest('[data-action]');
     if (!button) return;
     const { action, feature, check } = button.dataset;
+    if (action === 'card-toggle') {
+      const key = `menus:${feature}`;
+      if (state.open.has(key)) state.open.delete(key); else state.open.add(key);
+      return render();
+    }
+    if (action === 'card-check') {
+      const item = state.data.menus?.menus.flatMap((m) => m.cards).find((c) => c.id === feature)?.checks.find((c) => c.id === check);
+      if (!item) return;
+      const result = item.result === button.dataset.result ? 'pending' : button.dataset.result;
+      return saveCardCheck(feature, check, result, result === 'issue' ? item.note : '');
+    }
+    if (action === 'card-note') {
+      const input = button.parentElement.querySelector('input');
+      return saveCardCheck(feature, check, 'issue', input.value).then(() => toast('메모를 저장했습니다.'));
+    }
     if (action === 'toggle') {
       const key = `${state.view}:${feature}`;
       if (state.open.has(key)) state.open.delete(key); else state.open.add(key);

@@ -38,6 +38,16 @@ gh auth status
 
 자동 조회는 없습니다. 페이지를 처음 열 때 한 번, 그리고 새로고침 버튼을 누를 때만 GitHub를 읽습니다.
 
+## 메뉴별 기능
+
+왼쪽 **메뉴별 기능**은 Office 저장소의 기능 카드(`docs/feature-cards/*.md`, 개발 브랜치)를 읽어 화면별로 보여 줍니다.
+기획(`features/`)이 "앞으로 만들 것"이라면 기능 카드는 "지금 되는 것"입니다.
+
+- 대상(인력사무소·시공회사·작업자·외부·공통) 탭, **최근 7일 변경**, **확인 남음·문제** 필터
+- 카드를 열면 화면 위치, 정책(마우스를 올리면 규칙), 날짜별 이력과 PR, API, 확인 항목이 보입니다.
+- 확인 항목의 통과/문제는 기획 기능과 같은 `data/state.json`에 `card:<ID>` 이름으로 저장됩니다.
+- 카드 형식과 작성 규칙은 Office 저장소 `docs/feature-cards/README.md`에 있습니다. 이 저장소의 `lib/cards.mjs`는 Office `scripts/feature-cards-lib.mjs`의 복사본이라 형식을 바꾸면 둘 다 고칩니다.
+
 ## 설정 (`.env`)
 
 | 이름 | 기본값 | 설명 |
@@ -49,6 +59,10 @@ gh auth status
 | `FEATURES_REF` | `main` | 읽을 브랜치 |
 | `FEATURES_LOCAL_DIR` | (없음) | 지정하면 GitHub 대신 이 로컬 폴더를 읽음 (테스트용) |
 | `PORT` | `4400` | 서버 포트 |
+| `CARDS_REPO` | `yangmin9704188-max/jakupan_office_web` | 기능 카드가 있는 저장소 |
+| `CARDS_DIR` | `docs/feature-cards` | 기능 카드 폴더 |
+| `CARDS_REF` | `codex/office-performance-investigation-20261119` | 읽을 브랜치 |
+| `CARDS_LOCAL_DIR` | (없음) | 지정하면 GitHub 대신 이 로컬 폴더의 카드를 읽음 |
 
 예시 데이터로 화면만 보려면 `FEATURES_LOCAL_DIR=examples/features`로 실행하면 됩니다.
 

@@ -336,3 +336,18 @@ a:hover { text-decoration: underline; }
   .step { flex-direction: column; align-items: flex-start; }
   .check-top { flex-direction: column; }
 }
+
+/* 메뉴별 기능 (Office 기능 카드) */
+.tab.toggle { border: 1px dashed var(--line); }
+.tab.toggle.active { border-style: solid; border-color: var(--green-line); background: var(--green-bg); color: #6ee7b7; }
+.menu-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.menu-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 0 2px; }
+.menu-head h2 { margin: 0; font-size: 16px; font-weight: 700; color: var(--text-strong); }
+.menu-sub { margin: 6px 2px 0; font-size: 12px; font-weight: 600; color: var(--text-muted, #94a3b8); }
+.card-id { flex: none; font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--primary-text); }
+.card-grid { display: grid; gap: 12px; margin-bottom: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.policy-chip { padding: 3px 8px; border-radius: 999px; border: 1px solid var(--blue-line); background: var(--blue-bg); color: #c7d2fe; font-size: 12px; cursor: help; }
+.history, .api-list { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13px; }
+.h-date { font-variant-numeric: tabular-nums; color: var(--text-strong); }
+.h-kind { color: var(--primary-text); font-weight: 600; }
