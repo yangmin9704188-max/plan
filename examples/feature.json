@@ -1,0 +1,19 @@
+{
+  "title": "청구서 접수 자동화 (예시)",
+  "product": "Office",
+  "summary": "청구서를 접수하고 정보를 채운 후 담당자가 검토한다.",
+  "specificationUrl": "",
+  "developmentPlanUrl": "",
+  "specification": "# 최종 기획\nPDF/이미지 청구서를 받아 초안을 만든다.",
+  "developmentPlan": "# 개발계획\nPR01 접수 기반 → PR02 추출 → PR03 검토 화면",
+  "prSlots": [
+    { "label": "PR01 — 접수 기반", "repo": "example/office", "branch": "feat/billing-pr01" },
+    { "label": "PR02 — 정보 추출", "repo": "example/office", "branch": "feat/billing-pr02" },
+    { "label": "PR03 — 검토 화면", "repo": "example/office", "branch": "feat/billing-pr03" }
+  ],
+  "checks": [
+    { "text": "청구서를 첨부하면 초안이 생성되는가?" },
+    { "text": "금액 수정 후 다시 열어도 값이 유지되는가?" },
+    { "text": "승인한 청구서가 검토 목록에 나타나는가?" }
+  ]
+}
