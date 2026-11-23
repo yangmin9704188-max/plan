@@ -54,8 +54,8 @@ repo: yangmin9704188-max/jakupan_office_web
 
 ## 개발 계획
 
-- PAY-01 거래·지급 약정·무청구 회차 생성과 받은 청구의 기존 정산 연결 | branch: codex/office-vendor-payables-pay01-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PAY-02 내부 산출·근거·청구 대조와 정산 인정액 확정 | branch: codex/office-vendor-payables-pay02 | repo: yangmin9704188-max/jakupan_office_web
+- PAY-01 거래·지급 약정·무청구 회차 생성과 받은 청구의 기존 정산 연결 | branch: codex/office-vendor-payables-pay01-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 233
+- PAY-02 내부 산출·근거·청구 대조와 정산 인정액 확정 | branch: codex/office-vendor-payables-pay02 | repo: yangmin9704188-max/jakupan_office_web | pr: 238
 - PAY-03 약정 증감·회차 재배분·협의 조정과 사후 정정 | branch: codex/office-vendor-payables-pay03 | repo: yangmin9704188-max/jakupan_office_web
 - PAY-04 실제 지급·배분·선급·유보·증빙·반환 관리 | branch: codex/office-vendor-payables-pay04 | repo: yangmin9704188-max/jakupan_office_web
 - PAY-05 내부 산출·정산 검토·지급 관리 화면 통합과 접수·합계·종결 연결 | branch: codex/office-vendor-payables-pay05 | repo: yangmin9704188-max/jakupan_office_web
