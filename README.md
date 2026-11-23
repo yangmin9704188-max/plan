@@ -16,19 +16,17 @@ npm start
 
 브라우저에서 **http://127.0.0.1:4400** 을 엽니다.
 
-### GitHub 토큰 (비공개 저장소)
+### GitHub 연결 (비공개 저장소)
 
-공개 저장소만 볼 때는 토큰 없이 동작합니다. 비공개 저장소가 하나라도 있으면 GitHub **Fine-grained personal access token**을 만듭니다.
-
-- 대상 저장소: 이 `plan` 저장소 + PR을 볼 제품 저장소들
-- 권한: **Contents: Read-only**, **Pull requests: Read-only**
+토큰을 따로 만들 필요가 없습니다. `.env`에 `GITHUB_TOKEN`이 없으면 서버가 시작할 때 **GitHub CLI 로그인(`gh auth token`)**을 가져와 메모리에서만 씁니다. 대시보드는 읽기만 합니다.
 
 ```powershell
-Copy-Item .env.example .env
-notepad .env
+gh auth status
 ```
 
-`.env`의 `GITHUB_TOKEN=` 뒤에 토큰을 넣고 다시 `npm start` 합니다. 토큰은 서버에서만 쓰이고 브라우저로 전달되지 않습니다.
+로그인돼 있지 않다면 `gh auth login`을 한 번 실행하고 서버를 다시 켜세요. 서버 창에 `GitHub 연결: gh 로그인`이 보이면 됩니다.
+
+권한을 좁히고 싶다면 GitHub **Fine-grained token**(Contents·Pull requests: Read-only)을 만들어 `.env`의 `GITHUB_TOKEN=`에 넣으세요. `.env` 토큰이 gh 로그인보다 우선합니다. gh 로그인을 쓰지 않으려면 `GITHUB_TOKEN_FROM_GH=0`을 넣으세요.
 
 ## 사용 흐름
 
@@ -44,7 +42,8 @@ notepad .env
 
 | 이름 | 기본값 | 설명 |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | (없음) | 읽기 전용 토큰 |
+| `GITHUB_TOKEN` | (없음) | 읽기 전용 토큰. 없으면 gh 로그인 사용 |
+| `GITHUB_TOKEN_FROM_GH` | (켜짐) | `0`이면 gh 로그인을 쓰지 않음 |
 | `FEATURES_REPO` | `yangmin9704188-max/plan` | 기능 파일이 있는 저장소 |
 | `FEATURES_DIR` | `features` | 기능 파일 폴더 |
 | `FEATURES_REF` | `main` | 읽을 브랜치 |

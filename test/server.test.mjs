@@ -105,3 +105,12 @@ test('rejects foreign origins and unknown features', async (t) => {
   assert.equal((await post(`${base}/api/features/billing/complete`, undefined, { Origin: 'https://evil.example' })).status, 403);
   assert.equal((await post(`${base}/api/features/unknown/complete`)).status, 404);
 });
+
+test('token: .env first, then gh login, never fails startup', async () => {
+  const { resolveToken } = await import('../server.mjs');
+  const gh = async () => ({ stdout: 'gho_fromgh\n' });
+  assert.deepEqual(await resolveToken({ GITHUB_TOKEN: 'from-env' }, gh), { token: 'from-env', source: '.env 토큰' });
+  assert.deepEqual(await resolveToken({}, gh), { token: 'gho_fromgh', source: 'gh 로그인' });
+  assert.deepEqual(await resolveToken({ GITHUB_TOKEN_FROM_GH: '0' }, gh), { token: '', source: '' });
+  assert.deepEqual(await resolveToken({}, async () => { throw new Error('gh not installed'); }), { token: '', source: '' });
+});

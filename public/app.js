@@ -57,6 +57,10 @@ function tagClass(name) {
   return n ? `tag c${n}` : 'tag';
 }
 
+function productTags(f) {
+  return f.products.length ? `<span class="tags">${f.products.map((p) => `<span class="${tagClass(p)}">${esc(p)}</span>`).join('')}</span>` : '';
+}
+
 function current() {
   return state.data[state.view];
 }
@@ -125,7 +129,7 @@ function renderChrome() {
   const notices = [];
   if (data?.sourceError) notices.push(`기능 파일을 읽지 못했습니다: ${esc(data.sourceError)}`);
   if (!state.tokenConfigured && list.some((f) => f.steps.some((s) => s.pr?.status === 'unavailable'))) {
-    notices.push('일부 PR을 조회하지 못했습니다. 비공개 저장소라면 <code>.env</code>의 <code>GITHUB_TOKEN</code>이 필요합니다.');
+    notices.push('일부 PR을 조회하지 못했습니다. 비공개 저장소라면 <code>gh auth login</code>으로 로그인하거나 <code>.env</code>에 <code>GITHUB_TOKEN</code>을 넣고 서버를 다시 켜세요.');
   }
   $('#notices').innerHTML = notices.map((n) => `<div class="notice">${n}</div>`).join('');
 }
@@ -165,16 +169,61 @@ function checkRow(feature, check, editable) {
     <div class="check-buttons">${choice('pass', '통과')}${choice('issue', '문제')}</div></div>${memo}</div>`;
 }
 
+// Minimal, safe Markdown: paragraphs and "- " lists, with **bold** and `code`.
+function inline(text) {
+  return esc(text)
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function richText(text) {
+  const out = [];
+  let list = null;
+  let paragraph = [];
+  const flush = () => {
+    if (paragraph.length) out.push(`<p>${paragraph.map(inline).join('<br>')}</p>`);
+    paragraph = [];
+  };
+  for (const line of text.split('\n')) {
+    const bullet = line.match(/^\s*[-*+]\s+(.*)$/);
+    if (bullet) {
+      flush();
+      list ??= [];
+      list.push(`<li>${inline(bullet[1])}</li>`);
+      continue;
+    }
+    if (list) { out.push(`<ul>${list.join('')}</ul>`); list = null; }
+    if (line.trim()) paragraph.push(line.trim()); else flush();
+  }
+  flush();
+  if (list) out.push(`<ul>${list.join('')}</ul>`);
+  return `<div class="rich">${out.join('')}</div>`;
+}
+
+function planBlocks(sections) {
+  return `<div class="plan-parts">${sections.map((s) => {
+    if (s.key === 'intro') return `<div class="plan-part">${richText(s.text)}</div>`;
+    if (s.folded) return `<details class="plan-fold"><summary>${esc(s.label)}</summary>${richText(s.text)}</details>`;
+    return `<div class="plan-part"><div class="plan-label">${esc(s.label)}</div>${richText(s.text)}</div>`;
+  }).join('')}</div>`;
+}
+
 function featureBody(f) {
   const done = state.view === 'done';
   const merged = f.counts.merged;
   const stepsMeta = done ? `${f.counts.steps}단계` : `${merged} / ${f.counts.steps} 병합`;
   const checkMeta = `${f.counts.pass} / ${f.counts.checks} 통과${f.counts.issue ? ` · 문제 ${f.counts.issue}` : ''}`;
+  const meta = [
+    done ? '' : `<span class="summary-chip">${merged}/${f.counts.steps} 병합 · ${f.counts.pass}/${f.counts.checks} 통과</span>`,
+    f.counts.issue && !done ? `<span class="issue-chip">문제 ${f.counts.issue}</span>` : ''
+  ].join('');
   return `<div class="feature-body">
+    ${meta.trim() ? `<div class="body-meta">${meta}</div>` : ''}
     <div class="card">
       <div class="section-head"><h3 class="section-title">${ICON.doc}기획</h3>
         ${f.url ? `<a class="source-link" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">원문 ↗</a>` : ''}</div>
-      ${f.plan ? `<p class="plan-text">${esc(f.plan)}</p>` : '<span class="empty-text">기획 내용이 아직 없습니다.</span>'}
+      ${f.planSections?.length ? planBlocks(f.planSections) : '<span class="empty-text">기획 내용이 아직 없습니다.</span>'}
       ${f.warnings.length ? `<ul class="warnings">${f.warnings.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}
     </div>
     <div class="columns">
@@ -198,22 +247,11 @@ function featureBody(f) {
 function featureItem(f) {
   const done = state.view === 'done';
   const opened = state.open.has(`${state.view}:${f.id}`);
-  const firstLine = f.plan.split('\n').find((line) => line.trim()) || '';
-  const summary = done
-    ? `<span class="done-chip">${formatTime(f.completedAt, true)} 완료</span>`
-    : `<span class="summary-chip">${f.counts.merged}/${f.counts.steps} 병합 · ${f.counts.pass}/${f.counts.checks} 통과</span>`;
-  return `<article class="feature ${opened ? 'open' : ''} ${f.counts.issue && !done ? 'has-issue' : ''}" data-id="${esc(f.id)}">
+  // Collapsed rows show only product badges and the title; the rest appears when opened.
+  return `<article class="feature ${opened ? 'open' : ''}" data-id="${esc(f.id)}">
     <button type="button" class="feature-head" data-action="toggle" data-feature="${esc(f.id)}" aria-expanded="${opened}">
-      <div class="head-left">
-        ${f.products.length ? `<span class="tags">${f.products.map((p) => `<span class="${tagClass(p)}">${esc(p)}</span>`).join('')}</span>` : ''}
-        <span class="feature-title">${esc(f.title)}</span>
-        <span class="feature-hint">${esc(firstLine.replace(/^[#>*\-\s]+/, ''))}</span>
-      </div>
-      <div class="head-right">
-        ${summary}
-        ${f.counts.issue && !done ? `<span class="issue-chip">문제 ${f.counts.issue}</span>` : ''}
-        ${ICON.chevron}
-      </div>
+      <div class="head-left">${productTags(f)}<span class="feature-title">${esc(f.title)}</span></div>
+      <div class="head-right">${ICON.chevron}</div>
     </button>
     ${opened ? featureBody(f) : ''}
   </article>`;

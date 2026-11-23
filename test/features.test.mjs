@@ -64,3 +64,29 @@ test('title falls back to H1 then file id; template and README are skipped', () 
   assert.equal(isFeatureFile('README.md'), false);
   assert.equal(isFeatureFile('notes.txt'), false);
 });
+
+test('기획 sub-headings become ordered sections; ### never leaves 기획', async () => {
+  const { parseFeatureDoc: parse } = await import('../lib/features.mjs');
+  const parsed = parse('x', `## 기획
+### 누구를 위해
+소규모 시공업체 담당자
+### 왜
+금액이 어긋난다
+### 완성되면
+- 대조
+### 확인 절차
+기획 안의 확인 소제목
+### 지켜야 할 규칙
+- 덮어쓰지 않음
+### 이번에 안 하는 것
+- 자동 송금
+## 확인 항목
+- 진짜 확인 항목
+`);
+  assert.deepEqual(parsed.planSections.map((s) => [s.key, s.folded]), [
+    ['who', false], ['why', false], ['outcome', false], ['other', true], ['rules', true], ['out', true]
+  ]);
+  assert.equal(parsed.planSections[3].label, '확인 절차');
+  assert.equal(parsed.checks.length, 1);
+  assert.deepEqual(parse('y', '## 기획\n옛 형식 자유 텍스트').planSections, [{ key: 'intro', label: '', folded: false, text: '옛 형식 자유 텍스트' }]);
+});
