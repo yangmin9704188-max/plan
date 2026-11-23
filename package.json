@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A small, read-only GitHub PR progress board with owner verification checklists",
+  "description": "Local dashboard that reads GPT-written feature plans and GitHub PR progress, with owner verification checklists",
   "scripts": {
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",

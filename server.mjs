@@ -2,8 +2,10 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { FileStore, InputError } from './lib/store.mjs';
+import { StateStore, InputError } from './lib/state.mjs';
 import { createGithubClient } from './lib/github.mjs';
+import { createBoard } from './lib/board.mjs';
+import { isValidRepo } from './lib/features.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PUBLIC = resolve(ROOT, 'public');
@@ -13,38 +15,45 @@ function json(res, status, value) {
   res.end(JSON.stringify(value));
 }
 
-function invalid(message, statusCode = 400) {
-  return Object.assign(new Error(message), { statusCode });
-}
-
 async function bodyJson(req) {
   if (!req.headers['content-type']?.toLowerCase().startsWith('application/json')) {
-    throw invalid('application/json 형식으로 보내주세요.', 415);
+    throw new InputError('application/json 형식으로 보내주세요.', 415);
   }
   let data = '';
   for await (const chunk of req) {
     data += chunk;
-    if (Buffer.byteLength(data, 'utf8') > 1024 * 1024) throw invalid('요청 크기가 너무 큽니다.', 413);
+    if (Buffer.byteLength(data, 'utf8') > 64 * 1024) throw new InputError('요청 크기가 너무 큽니다.', 413);
   }
   try { return JSON.parse(data); }
-  catch { throw invalid('JSON 형식이 올바르지 않습니다.'); }
+  catch { throw new InputError('JSON 형식이 올바르지 않습니다.'); }
 }
 
 function assertLocalRequest(req) {
   const hostname = (req.headers.host || '').split(':')[0];
-  if (!['127.0.0.1', 'localhost'].includes(hostname)) throw invalid('로컬 접속만 지원합니다.', 403);
+  if (!['127.0.0.1', 'localhost'].includes(hostname)) throw new InputError('로컬 접속만 지원합니다.', 403);
   const origin = req.headers.origin;
   if (origin) {
-    try {
-      const parsed = new URL(origin);
-      if (!['127.0.0.1', 'localhost'].includes(parsed.hostname)) throw new Error();
-    } catch { throw invalid('허용되지 않은 요청 출처입니다.', 403); }
+    let ok = false;
+    try { ok = ['127.0.0.1', 'localhost'].includes(new URL(origin).hostname); } catch { ok = false; }
+    if (!ok) throw new InputError('허용되지 않은 요청 출처입니다.', 403);
   }
 }
 
-export function createAppServer({ dataPath = join(ROOT, 'data', 'features.json'), token = process.env.GITHUB_TOKEN || '', fetchImpl } = {}) {
-  const store = new FileStore(dataPath);
+export function sourceFromEnv(env = process.env) {
+  if (env.FEATURES_LOCAL_DIR) return { localDir: resolve(ROOT, env.FEATURES_LOCAL_DIR) };
+  const repo = env.FEATURES_REPO || 'yangmin9704188-max/plan';
+  if (!isValidRepo(repo)) throw new Error('FEATURES_REPO는 owner/repo 형식이어야 합니다.');
+  return { repo, dir: env.FEATURES_DIR || 'features', ref: env.FEATURES_REF || 'main' };
+}
+
+export function createAppServer({
+  statePath = join(ROOT, 'data', 'state.json'),
+  token = process.env.GITHUB_TOKEN || '',
+  fetchImpl,
+  source = sourceFromEnv()
+} = {}) {
   const github = createGithubClient({ token, fetchImpl });
+  const board = createBoard({ github, state: new StateStore(statePath), source });
   const assets = {
     '/': ['index.html', 'text/html; charset=utf-8'],
     '/app.js': ['app.js', 'text/javascript; charset=utf-8'],
@@ -56,41 +65,28 @@ export function createAppServer({ dataPath = join(ROOT, 'data', 'features.json')
     try {
       assertLocalRequest(req);
       const method = req.method || 'GET';
-      const pathname = new URL(req.url || '/', 'http://localhost').pathname;
-      const writeMethod = ['POST', 'PATCH', 'PUT', 'DELETE'].includes(method);
-      if (writeMethod) assertLocalRequest(req);
+      const url = new URL(req.url || '/', 'http://localhost');
+      const { pathname } = url;
 
       if (method === 'GET' && pathname === '/api/health') {
         return json(res, 200, { ok: true, githubTokenConfigured: Boolean(token), localOnly: true });
       }
-      if (method === 'GET' && pathname === '/api/features') {
-        return json(res, 200, { features: await store.list() });
+      if (method === 'GET' && pathname === '/api/board') {
+        return json(res, 200, await board.view(url.searchParams.get('view') === 'done' ? 'done' : 'active'));
       }
-      if (method === 'POST' && pathname === '/api/features') {
-        return json(res, 201, { feature: await store.create(await bodyJson(req)) });
+      if (method === 'POST' && pathname === '/api/refresh') {
+        await board.refresh();
+        return json(res, 200, await board.view(url.searchParams.get('view') === 'done' ? 'done' : 'active'));
       }
-      if (method === 'GET' && pathname === '/api/progress') {
-        const refresh = new URL(req.url, 'http://localhost').searchParams.get('refresh') === '1';
-        const features = await store.list();
-        // Keep rate limits and UI latency bounded. No background workers or task state.
-        const progress = [];
-        for (let index = 0; index < features.length; index += 4) {
-          progress.push(...await Promise.all(features.slice(index, index + 4).map((feature) => github.resolveFeature(feature, { refresh }))));
-        }
-        return json(res, 200, { progress });
-      }
-
       const check = pathname.match(/^\/api\/features\/([^/]+)\/checks\/([^/]+)$/);
       if (method === 'PATCH' && check) {
-        const feature = await store.updateCheck(check[1], check[2], await bodyJson(req));
-        return json(res, 200, { feature });
+        const saved = await board.setCheck(decodeURIComponent(check[1]), decodeURIComponent(check[2]), await bodyJson(req));
+        return json(res, 200, { check: saved });
       }
-      const feature = pathname.match(/^\/api\/features\/([^/]+)$/);
-      if (method === 'PATCH' && feature) {
-        return json(res, 200, { feature: await store.update(feature[1], await bodyJson(req)) });
-      }
-      if (method === 'DELETE' && feature) {
-        return json(res, 200, { feature: await store.remove(feature[1]) });
+      const done = pathname.match(/^\/api\/features\/([^/]+)\/(complete|reopen)$/);
+      if (method === 'POST' && done) {
+        const saved = await board.setCompleted(decodeURIComponent(done[1]), done[2] === 'complete');
+        return json(res, 200, { completedAt: saved.completedAt });
       }
 
       if (method === 'GET' && assets[pathname]) {
@@ -107,8 +103,8 @@ export function createAppServer({ dataPath = join(ROOT, 'data', 'features.json')
       }
       return json(res, 404, { error: '경로를 찾을 수 없습니다.' });
     } catch (error) {
-      const status = error.statusCode || (error instanceof InputError ? 400 : 500);
-      if (status === 500) console.error('[server] request failed:', error.name);
+      const status = error.statusCode || 500;
+      if (status === 500) console.error('[server] request failed:', error);
       return json(res, status, { error: status === 500 ? '서버 오류가 발생했습니다.' : error.message });
     }
   };
@@ -118,11 +114,12 @@ export function createAppServer({ dataPath = join(ROOT, 'data', 'features.json')
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { process.loadEnvFile?.(join(ROOT, '.env')); } catch (error) { if (error.code !== 'ENOENT') throw error; }
-  // Evaluate the env after loading .env; createAppServer otherwise uses supplied options.
   const port = Number(process.env.PORT || '4400');
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT는 1~65535 범위여야 합니다.');
-  createAppServer({ token: process.env.GITHUB_TOKEN || '' }).listen(port, '127.0.0.1', () => {
-    console.log(`작업판 개발 진행표: http://127.0.0.1:${port}`);
+  const source = sourceFromEnv();
+  createAppServer({ token: process.env.GITHUB_TOKEN || '', source }).listen(port, '127.0.0.1', () => {
+    console.log(`작업판 개발 대시보드: http://127.0.0.1:${port}`);
+    console.log('기능 파일:', source.localDir || `${source.repo}/${source.dir} (${source.ref})`);
     console.log('GitHub 연결:', process.env.GITHUB_TOKEN ? '개인 토큰 사용' : '공개 저장소만 조회 가능');
   });
 }
