@@ -109,7 +109,7 @@ Office 현장에 참여하고 사진·작업보고·수량을 제출한다.
 
 U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://github.com/yangmin9704188-max/jakupan_office_web/pull/275)와 [테스트 발견 보완 #277](https://github.com/yangmin9704188-max/jakupan_office_web/pull/277)에 기록했다.
 
-U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. 두 PR은 Draft이며 실제 Supabase 전체 스키마·기기·S2S 검증 후 Codex가 병합한다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
+U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. Office #279는 Works 통합 검수 브랜치에 병합했다. Worker #201은 초안이며 실제 Supabase 전체 스키마와 로그인한 Worker·Office 간 호출 검증이 남아 있다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
 
 ## 개발 계획
 
