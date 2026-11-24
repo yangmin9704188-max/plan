@@ -60,6 +60,8 @@ repo: yangmin9704188-max/jakupan_office_web
 - PR05 Gmail 후보 메타데이터 수집·사용자 선택 분석·수신 중지·갱신 및 복구 | branch: codex/office-received-invoice-pr05-gmail-selection | repo: yangmin9704188-max/jakupan_office_web | pr: 249
 - PR06 HWP·HWPX·XLSX 변환·표 추출·원문 근거·실패 보완 | branch: codex/office-received-invoice-pr06-document-formats | repo: yangmin9704188-max/jakupan_office_web
 - 실계정 Gmail 수신 인증 복귀와 Hive 청구 판독의 원문 근거 확인 | branch: codex/office-invoice-ai-evidence-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 258
+- 개발 사무소의 사용량 제한 해제와 첨부 PDF 분석 실행 | branch: codex/office-local-invoice-ai-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 262
+- 첨부 선택·AI 제안 적용과 정산 화면 검수 통합 | branch: codex/office-demo-workflow-review-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 266
 
 ## 확인 항목
 
