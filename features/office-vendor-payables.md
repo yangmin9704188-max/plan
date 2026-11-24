@@ -25,7 +25,7 @@ repo: yangmin9704188-max/jakupan_office_web
 
 ### 화면
 
-정산센터 → 업체 지급 → 내부 산출 / 정산 검토 / 지급 관리
+정산센터 → 업체 지급 → 접수·검토 / 정산 검토 / 지급 관리. 계획·산출에서 지급 계획·내부 산출을 열고, 지급 계획의 회차 보기에서 거래 종결·재개를 처리한다.
 
 ### 지켜야 할 규칙
 
@@ -48,6 +48,9 @@ repo: yangmin9704188-max/jakupan_office_web
 - 인력 거래의 총액·세전 임금·소개료·대불원금은 현장·합의 조건과 같은 계산 결과를 사용하고 지급 화면에서 별도 세율·보험식을 만들지 않는다
 - 사업주 보험료를 예산에 포함해도 기존 근로자 임금을 자동 감액하지 않고 약정된 비용 분담 또는 변경·협의로 처리한다
 - 인력요청 수락과 늦게 온 메일·청구는 기존 약정·정산에 연결하며 별도 지급 대상을 중복 생성하지 않는다
+- 거래 종결은 계약·원문·실제 지급과 별도 이력으로 남기며 미배정·미확정·미지급·과지급·유보·협의 중 금액·미해결 변경이 있으면 차단한다
+- 서로 다른 회차의 미지급과 과지급을 상계해 종결하지 않으며, 종결 뒤 금액을 바꾸려면 사유를 남겨 재개한다
+- 업체 전체의 미충당 선급을 특정 거래에 임의 귀속하지 않고 참고액으로 표시한다
 
 ### 이번에 안 하는 것
 
@@ -61,10 +64,12 @@ repo: yangmin9704188-max/jakupan_office_web
 - PAY-02 내부 산출·근거·청구 대조와 정산 인정액 확정 | branch: codex/office-vendor-payables-pay02 | repo: yangmin9704188-max/jakupan_office_web | pr: 238
 - PAY-03 약정 증감·회차 재배분·협의 조정과 사후 정정 | branch: codex/office-vendor-payables-pay03 | repo: yangmin9704188-max/jakupan_office_web | pr: 252
 - PAY-04 실제 지급·배분·선급·유보·증빙·반환 관리 | branch: codex/office-vendor-payables-pay04 | repo: yangmin9704188-max/jakupan_office_web | pr: 255
-- PAY-05 내부 산출·정산 검토·지급 관리 화면 통합과 접수·합계·종결 연결 | branch: codex/office-vendor-payables-pay05 | repo: yangmin9704188-max/jakupan_office_web | pr: 256
+- PAY-05 필터별 확정 잔액·예정·유보·선급 합계 | branch: codex/office-vendor-payables-pay05 | repo: yangmin9704188-max/jakupan_office_web | pr: 256
 - 정산 검토에서 작업자 임금 직불·고객 예치금·자체 자금·기상환과 증빙을 나눠 확인 | branch: codex/office-agency-payment-evidence-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 260
 - 접수·검토 기본 진입과 정산 대조 시연 데이터 | branch: codex/office-payables-entry-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 265
 - PAY-05 지급 거래 종결·재개, 미해결 금액과 변경 요청 확인, 처리 이력 보관 | branch: codex/office-vendor-payables-pay05-close | repo: yangmin9704188-max/jakupan_office_web | pr: 274
+- PAY-04 무청구 정산의 기존 개별 지급에 실제 반환·증빙 연결 | branch: codex/office-vendor-payables-case-refunds | repo: yangmin9704188-max/jakupan_office_web
+- PAY-05 공통 필터·자금 일정·경영 조회의 지급 소비처 연결 | branch: codex/office-vendor-payables-pay05-consumers | repo: yangmin9704188-max/jakupan_office_web
 
 ## 확인 항목
 
@@ -85,3 +90,9 @@ repo: yangmin9704188-max/jakupan_office_web
 - PAY-04: 업체 지급 → 지급 관리에서 일부 지급한 건의 인정액을 기지급액보다 작게 조정한 뒤 실제 반환을 등록 → 과지급과 반환 후 잔액이 맞고 원래 지급·정정·반환 이력이 보존되는지 확인한다.
 - PAY-05: 업체 지급 → 내부 산출 / 정산 검토 / 지급 관리에서 같은 업체·현장·기간을 선택 → 같은 정산으로 이어지고 예정액·청구액·인정액·실제 지급액이 합계에 중복 반영되지 않는지 확인한다.
 - PAY-05: 업체 지급 → 정산 검토에서 확정된 무청구 정산에 뒤늦은 청구·수정본을 연결하고 지급 관리에서 완료 내역을 다시 열기 → 지급 대상이 늘지 않고 미정리 금액의 이유와 기존 지급·증빙을 확인할 수 있는지 확인한다.
+- PAY-05 종결: 업체 지급 → 계획·산출 → 지급 계획 → 회차 보기에서 종결 검토를 열기 → 미배정·미확정·미지급·과지급·유보·협의·미해결 변경별 차단 이유를 확인할 수 있는지 확인한다.
+- PAY-05 종결: 서로 다른 회차에 같은 금액의 미지급과 과지급을 남긴 뒤 종결을 시도 → 합계가 상계되어도 두 금액이 각각 표시되고 종결되지 않는지 확인한다.
+- PAY-05 종결: 종결 검토에서 적용하지 않을 약정 변경 요청을 철회하거나 수정 자료를 금액 변경 없이 검토 완료 → 사유가 남고 약정·인정액·실제 지급을 바꾸지 않은 채 차단 이유가 갱신되는지 확인한다.
+- PAY-05 종결: 회차 금액과 변경 검토를 모두 정리하고 사유를 입력해 종결 → 새로고침 후 종결 상태·담당자·시각·이력이 유지되며 기존 원문과 지급 내역이 보이는지 확인한다.
+- PAY-05 종결: 종결한 거래에서 금액 정정·배분 해제·실제 반환을 시도한 뒤 사유를 남겨 재개 → 재개 전에는 차단되고 재개 후에는 같은 원본과 지급 기록을 이어서 처리할 수 있는지 확인한다.
+
