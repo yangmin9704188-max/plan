@@ -90,6 +90,7 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 - 기존 PAY에 수락 예정·실제 출역·대불·청구 연결, 자쿠의 동일 업무 경로 연결 | branch: codex/office-agency-request-payables | repo: yangmin9704188-max/jakupan_office_web | pr: 254
 - 소개료 기본값과 현장 조건의 세전 임금 비율·시간/일 정액, 상한 경고 후 발송·수락 | branch: codex/office-fee-input-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 259
 - 사무소 관리의 정산 설정과 임금 기준 역산 수수료 경고 | branch: codex/office-settlement-settings-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 264
+- 사무소 정산 설정의 다섯 정책 탭과 저장 기능 연결 | branch: codex/office-stitch-settlement-settings-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 267
 
 ## 확인 항목
 
