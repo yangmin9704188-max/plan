@@ -66,6 +66,7 @@ repo: yangmin9704188-max/jakupan_office_web
 - PR04 선반영: 인력 청구 초안 종료와 발송 전 청구서 안내 | branch: claude/billing-no-labor-draft-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 242
 - PR04 선반영: 청구 준비를 확정 시안에 맞춤 | branch: claude/billing-prep-design-align-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 244
 - PR04 잔여 화면 정리와 최종 검수, 선반영한 기능·디자인 유지 | branch: codex/office-billing-pr04-gemini-design-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 236
+- 자쿠의 업체 청구 조회·받은 청구 및 업체 지급 화면 안내 | branch: codex/office-financial-jaku-review-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 247
 
 ## 확인 항목
 
