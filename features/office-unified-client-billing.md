@@ -21,8 +21,7 @@ repo: yangmin9704188-max/jakupan_office_web
 - 소규모 작업은 긴 계약 등록 없이 간편 일괄청구로 끝낸다
 - 계약의 계약금·중도금·잔금을 회차별로 청구한다
 - 공사 초안을 저장해 두고 다시 열어 수정한다
-- 미청구 후보액, 저장 초안, 청구미수금, 계약 선입금 잔액을 각각 확인한다
-- 목록 조건·페이지를 유지한 채 작성·초안·청구 상세·계약 상세를 오간다
+- 미청구 후보액·저장 초안·청구미수금·계약 선입금 잔액을 각각 확인하고, 목록 조건·페이지를 유지한 채 작성·초안·청구 상세·계약 상세를 오간다
 
 ### 화면
 
@@ -38,7 +37,7 @@ repo: yangmin9704188-max/jakupan_office_web
 - 인력 청구는 작업자명·근무일·공수·청구단가를 보존한다
 - 계약 전체의 참고 내역과 이번 회차 금액, 업체 원가와 고객 청구가를 구분한다
 - 초안 저장, 청구 생성, 발송, 수금은 서로 다른 단계다
-- 청구한 명세는 고정한다. 잘못 만든 미발송 청구는 취소한 뒤 새 초안에서 다시 쓴다
+- 공사·용역의 확정 명세는 직접 덮어쓰지 않고 취소 후 새 초안에서 다시 작성한다. 인력 청구는 기존 발송 전 수정·취소 경로를 사용하며 별도 초안을 두지 않는다
 - 중복 생성, 오래된 버전 덮어쓰기, 같은 출역의 이중 청구를 막는다
 - 계약에 포함한 출역만 별도 인력 청구에서 빼고, 같은 현장의 별도 합의 출역은 빼지 않는다
 - 기존 직접고용·직접지급·서류 전용 기준과 기초 이월 미수금을 그대로 유지한다
@@ -48,6 +47,9 @@ repo: yangmin9704188-max/jakupan_office_web
 - 기간 기준은 인력은 근무일, 공사는 청구 예정일, 진행은 청구 대상 기간, 종결은 종결일, 선입금은 입금일이다. 초안 보관에는 기간 필터를 적용하지 않는다
 - 공사 준비에는 기본으로 도래한 회차와 예정일 미설정 회차를 보여주고, 미래 회차는 종료일을 지정해 조회한다
 - 로딩·조회 실패를 0건·0원으로 보여주지 않고, 빈 목록·검색 결과 없음·저장 실패·버전 충돌·부분 수금·연체를 구분한다
+- 현장·합의 조건의 임금·소개료·대불원금·세무 분류를 같은 계산 결과로 표시하고 청구 화면에서 새로운 계산 기준을 만들지 않는다
+- 사업자정보가 없는 일반 청구서·거래명세는 해당 칸을 공란으로 출력할 수 있고, 실제 법정 발급·전송 완료와 구분한다
+- 청구 작성 패널의 다른 현장 추가와 기존 현장별 기간, 인력 초안을 두지 않는 흐름을 화면 정리 뒤에도 유지한다
 
 ### 이번에 안 하는 것
 
@@ -57,10 +59,13 @@ repo: yangmin9704188-max/jakupan_office_web
 
 ## 개발 계획
 
-- PR01 청구 유형·계약/회차 식별과 공통 목록·필터 구조 정리 | branch: codex/office-billing-pr01-unified-list-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR02 공사·용역 내역 입력·초안 저장·청구 생성·중복 보호·고객용 문서 출력 | branch: codex/office-billing-pr02-itemized-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR03 인력·공사 청구 준비 통합·필터별 집계·상세 왕복과 디자인 인계 확인 | branch: codex/office-billing-pr03-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR04 확정한 Gemini 디자인 적용과 최종 화면 검수 | branch: codex/office-billing-pr04-gemini-design-20261124 | repo: yangmin9704188-max/jakupan_office_web
+- PR01 청구 유형·계약/회차 식별과 공통 목록·필터 구조 정리 | branch: codex/office-billing-pr01-unified-list-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 224
+- PR02 공사·용역 내역 입력·초안 저장·청구 생성·중복 보호·고객용 문서 출력 | branch: codex/office-billing-pr02-itemized-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 225
+- PR03 인력·공사 청구 준비 통합·필터별 집계·상세 왕복과 디자인 인계 확인 | branch: codex/office-billing-pr03-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 231
+- PR04 선반영: 청구 작성 패널에서 같은 거래처의 다른 현장 추가 | branch: claude/billing-add-site-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 239
+- PR04 선반영: 인력 청구 초안 종료와 발송 전 청구서 안내 | branch: claude/billing-no-labor-draft-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 242
+- PR04 선반영: 청구 준비를 확정 시안에 맞춤 | branch: claude/billing-prep-design-align-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 244
+- PR04 잔여 화면 정리와 최종 검수, 선반영한 기능·디자인 유지 | branch: codex/office-billing-pr04-gemini-design-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 236
 
 ## 확인 항목
 

@@ -16,13 +16,12 @@ repo: yangmin9704188-max/jakupan_office_web
 
 ### 완성되면
 
-- 받은 청구서를 직접 첨부, 거래처 제출 링크, 작업판 전용 수신주소, Gmail로 한 곳에 접수한다
+- PDF·이미지·HWP·HWPX·XLSX 청구 자료를 직접 첨부, 거래처 제출 링크, 작업판 전용 수신주소, Gmail로 한 곳에 접수한다
 - 업체명·청구번호·금액이 빠진 자료도 미완성 초안으로 보관하고 나중에 채운다
 - 고른 자료만 AI로 분석해 업체·현장·금액·기한·품목을 원문 위치·근거와 함께 제안받는다
 - 제안과 원문을 비교·수정한 뒤 확인하면 기존 업체 지급에 등록된다
 - 여러 원본을 한 청구로 묶거나, 한 원본에서 여러 청구 초안을 만든다
 - 기존 청구와 겹치거나 수정본일 가능성을 알려준다
-- PDF·이미지 외에 HWP·HWPX·XLSX 문서도 받는다
 
 ### 화면
 
@@ -44,6 +43,8 @@ repo: yangmin9704188-max/jakupan_office_web
 - Gmail은 지정한 라벨·발신자·제목 조건의 후보만 모으고, 고른 메일만 본문·첨부를 가져온다. 같은 대화의 다른 답장은 자동으로 포함하지 않는다
 - 문서 변환 실패·암호·손상·표 누락은 성공으로 감추지 않는다
 - AI 모델의 이미지 처리·한국어 판독 품질·비용 정책은 따로 확인하기 전까지 사용 가능으로 보지 않는다
+- 전용 수신주소·Gmail·첨부·제출 링크는 같은 원본·초안 경로를 사용하고, 약정·인정액·실제 지급은 기존 업체 지급 경로에 연결한다
+- 원문에서 추출한 사업자번호·보험·부가세는 입력 제안으로 보존한다. 기존 거래처·계약 정보나 법정 계산을 메일 내용만으로 덮어쓰지 않는다
 
 ### 이번에 안 하는 것
 
@@ -52,8 +53,8 @@ repo: yangmin9704188-max/jakupan_office_web
 
 ## 개발 계획
 
-- PR01 접수 초안·원본 연결·수동 검산·기존 업체 지급 등록 | branch: codex/office-received-invoice-pr01-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web
-- PR02 선택한 PDF·이미지·본문의 Hive AI 분석·원문 근거·비교 적용·사용량 연결 | branch: codex/office-received-invoice-pr02-ai-20261123 | repo: yangmin9704188-max/jakupan_office_web
+- PR01 접수 초안·원본 연결·수동 검산·기존 업체 지급 등록 | branch: codex/office-received-invoice-pr01-resume-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 229
+- PR02 선택한 PDF·이미지·본문의 Hive AI 분석·원문 근거·비교 적용·사용량 연결 | branch: codex/office-received-invoice-pr02-ai-20261123 | repo: yangmin9704188-max/jakupan_office_web | pr: 234
 - PR03 거래처 제출 링크 발급·외부 제출·만료·철회·접수 결과 | branch: codex/office-received-invoice-pr03-submission-link | repo: yangmin9704188-max/jakupan_office_web | pr: 237
 - PR04 업체별 전용 이메일 수신주소·본문·첨부 접수·중복 및 실패 복구 | branch: codex/office-received-invoice-pr04-inbound-email | repo: yangmin9704188-max/jakupan_office_web
 - PR05 Gmail 후보 메타데이터 수집·사용자 선택 분석·수신 중지·갱신 및 복구 | branch: codex/office-received-invoice-pr05-gmail-selection | repo: yangmin9704188-max/jakupan_office_web
