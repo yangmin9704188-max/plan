@@ -62,6 +62,7 @@ repo: yangmin9704188-max/jakupan_office_web
 - PAY-03 약정 증감·회차 재배분·협의 조정과 사후 정정 | branch: codex/office-vendor-payables-pay03 | repo: yangmin9704188-max/jakupan_office_web | pr: 252
 - PAY-04 실제 지급·배분·선급·유보·증빙·반환 관리 | branch: codex/office-vendor-payables-pay04 | repo: yangmin9704188-max/jakupan_office_web | pr: 255
 - PAY-05 내부 산출·정산 검토·지급 관리 화면 통합과 접수·합계·종결 연결 | branch: codex/office-vendor-payables-pay05 | repo: yangmin9704188-max/jakupan_office_web | pr: 256
+- 정산 검토에서 작업자 임금 직불·고객 예치금·자체 자금·기상환과 증빙을 나눠 확인 | branch: codex/office-agency-payment-evidence-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 260
 
 ## 확인 항목
 
