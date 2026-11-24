@@ -107,6 +107,8 @@ Office 현장에 참여하고 사진·작업보고·수량을 제출한다.
 - 모든 산업안전 법정 의무를 자동 충족하는 안전관리 제품.
 - 기획 문서 작성만으로 실제 운영 데이터 이관·삭제, Works 운영 중단, 외부 배포를 실행하는 것.
 
+U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://github.com/yangmin9704188-max/jakupan_office_web/pull/275)와 [테스트 발견 보완 #277](https://github.com/yangmin9704188-max/jakupan_office_web/pull/277)에 기록했다.
+
 ## 개발 계획
 
 - 준비 — 통합 개발 기준과 계획 확정 | branch: codex/office-works-unification-plan-20261124 | pr: 263 | repo: yangmin9704188-max/jakupan_office_web
