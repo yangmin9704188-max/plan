@@ -109,12 +109,15 @@ Office 현장에 참여하고 사진·작업보고·수량을 제출한다.
 
 U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://github.com/yangmin9704188-max/jakupan_office_web/pull/275)와 [테스트 발견 보완 #277](https://github.com/yangmin9704188-max/jakupan_office_web/pull/277)에 기록했다.
 
+U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. 두 PR은 Draft이며 실제 Supabase 전체 스키마·기기·S2S 검증 후 Codex가 병합한다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
+
 ## 개발 계획
 
 - 준비 — 통합 개발 기준과 계획 확정 | branch: codex/office-works-unification-plan-20261124 | pr: 263 | repo: yangmin9704188-max/jakupan_office_web
 - U00 Office 통합 목표의 제품 경계·원본 소유권 계약 | branch: codex/office-unify-u00-boundaries | pr: 28 | repo: yangmin9704188-max/jakupan_os
 - U01 작업자 태그·권한과 자체팀·외부팀 묶음·현장 참여 기반 | branch: codex/office-unify-u01-people-teams | pr: 275 | repo: yangmin9704188-max/jakupan_office_web
-- U02 Worker의 Office 팀 초대·요청·회사 전환과 사진 첫 연결 | branch: codex/office-unify-u02-team-connection | repo: yangmin9704188-max/jakupan_worker_app
+- U02 선행 보정 — Worker 원본 팀 ID·참여 단건 조회 | branch: codex/office-unify-u02-worker-contract | pr: 279 | repo: yangmin9704188-max/jakupan_office_web
+- U02 Worker의 Office 팀 초대·요청·회사 전환과 사진 첫 연결 | branch: codex/office-unify-u02-team-connection | pr: 201 | repo: yangmin9704188-max/jakupan_worker_app
 - U03 실제 출역 조회 통일과 월 공수표·기간 작업내역·다운로드 | branch: codex/office-unify-u03-attendance | repo: yangmin9704188-max/jakupan_office_web
 - U17 공수·고정급·수당과 설정형 공제·주급/월급·기지급 연결 | branch: codex/office-unify-u17-period-payroll | repo: yangmin9704188-max/jakupan_office_web
 - U04 근로계약 버전·서명/교부 기반과 업무센터 문서 용도별 진입 | branch: codex/office-unify-u04-contract-documents | repo: yangmin9704188-max/jakupan_office_web
