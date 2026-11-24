@@ -110,7 +110,7 @@ Office 현장에 참여하고 사진·작업보고·수량을 제출한다.
 ## 개발 계획
 
 - 준비 — 통합 개발 기준과 계획 확정 | branch: codex/office-works-unification-plan-20261124 | pr: 263 | repo: yangmin9704188-max/jakupan_office_web
-- U00 Office 통합 목표의 제품 경계·원본 소유권 계약 | branch: codex/office-unify-u00-boundaries | repo: yangmin9704188-max/jakupan_os
+- U00 Office 통합 목표의 제품 경계·원본 소유권 계약 | branch: codex/office-unify-u00-boundaries | pr: 28 | repo: yangmin9704188-max/jakupan_os
 - U01 작업자 태그·권한과 자체팀·외부팀 묶음·현장 참여 기반 | branch: codex/office-unify-u01-people-teams | repo: yangmin9704188-max/jakupan_office_web
 - U02 Worker의 Office 팀 초대·요청·회사 전환과 사진 첫 연결 | branch: codex/office-unify-u02-team-connection | repo: yangmin9704188-max/jakupan_worker_app
 - U03 실제 출역 조회 통일과 월 공수표·기간 작업내역·다운로드 | branch: codex/office-unify-u03-attendance | repo: yangmin9704188-max/jakupan_office_web
