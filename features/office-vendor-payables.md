@@ -64,6 +64,7 @@ repo: yangmin9704188-max/jakupan_office_web
 - PAY-05 내부 산출·정산 검토·지급 관리 화면 통합과 접수·합계·종결 연결 | branch: codex/office-vendor-payables-pay05 | repo: yangmin9704188-max/jakupan_office_web | pr: 256
 - 정산 검토에서 작업자 임금 직불·고객 예치금·자체 자금·기상환과 증빙을 나눠 확인 | branch: codex/office-agency-payment-evidence-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 260
 - 접수·검토 기본 진입과 정산 대조 시연 데이터 | branch: codex/office-payables-entry-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 265
+- PAY-05 지급 거래 종결·재개, 미해결 금액과 변경 요청 확인, 처리 이력 보관 | branch: codex/office-vendor-payables-pay05-close | repo: yangmin9704188-max/jakupan_office_web | pr: 274
 
 ## 확인 항목
 
