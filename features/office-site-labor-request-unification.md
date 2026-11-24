@@ -95,7 +95,7 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 - 사무소 관리의 정산 설정과 임금 기준 역산 수수료 경고 | branch: codex/office-settlement-settings-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 264
 - 사무소 정산 설정에 소개 수수료·정산 주기·보험 설정 및 변경 이력 연결 (공통 공수 환산·조퇴 시간별 인정·연장·야간·휴일 자동 가산 제외) | branch: codex/office-stitch-settlement-settings-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 267
 - 거래 템플릿·법령·계산·문서·보험 이력의 단일 파이프라인과 자동 QA 기준 정리 | branch: codex/office-settlement-pipeline-qa-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 269
-- 보험 합산 범위·도입 전 이력·기초 공제/잔액·무수정 저장·월마감 차액의 기존 처리 연결 보강 | branch: codex/office-settlement-insurance-history | repo: yangmin9704188-max/jakupan_office_web
+- 보험 합산 범위·도입 전 이력·기초 공제/잔액·무수정 저장·월마감 차액의 기존 처리 연결 보강 | branch: codex/office-settlement-insurance-history | repo: yangmin9704188-max/jakupan_office_web | pr: 276
 - 대표 거래의 인정액·청구·지급·문서 종단 자동 QA와 시간제·상한 경고 후속 계산 연결 보강 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web
 
 ## 확인 항목
