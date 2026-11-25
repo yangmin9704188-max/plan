@@ -90,10 +90,17 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 `codex/office-demo-workflow-review-20261124`의 `23a27943c3ef62b13ba4870860a25f302d08eab7`에
 포함되어 있다. Step 1~8의 개별 PR은 코드 포함을 확인한 뒤 닫았다. Step 9 #269와 Step 10 #276은 해당 검토 브랜치에
 병합됐다. Step 11 #280과 공통 지급 조회·일정 #281도 검수 브랜치에 병합했다.
-Step 12 #283은 Office 검수 브랜치에 병합했다. 대불원금·소개료·원천세를 인정액·실제 지급·지급 일정에 연결하며, 적용일은 Console의 발행 정책에서 확인한다. Console #23은 초안이고 운영 정책 발행과 Step 13은 남아 있다.
+Step 12 #283은 Office 검수 브랜치에 병합했다. 대불원금·소개료·원천세를 인정액·실제 지급·지급 일정에 연결하며, 적용일은 Console의 발행 정책에서 확인한다. Console #23은 초안이고 운영 정책 발행은 남아 있다.
+Step 13은 [Office Draft PR #286](https://github.com/yangmin9704188-max/jakupan_office_web/pull/286)에 연결했다.
+병합 기준 `f8682452` 위에서 계속고용 계약·기징수·기존 지급의 계약별 배분,
+양측 A/F/Q 정산 조회와 XLSX·인쇄, 선택한 보험 월마감 버전의 정정 명세를 구현한 후보다.
+최종 백엔드 50건(실제 DB·HTTP 30 포함), 웹 타입·관련 UI/문서 회귀와 DB 업그레이드는 통과했다.
+실제 PDF 시각 검수와 필수 안내 자산을 포함한 운영 빌드·설치 환경 검증은 남아 있다.
+임금·보험 W/H/I/N/B/K의 불변 원천, 상대 수취 확인과 법정 발급 필드는 미확인으로 남긴다.
+전체 거래의 완료와 대표의 확인 상태는 자동으로 변경하지 않는다.
 기존 Step 11의 넓은 범위는 실제 구현 의존성에 맞춰 아래 11~13으로 나눈다.
 상세 진행 근거와 남은 범위는 Office의 `OFFICE_SITE_LABOR_REQUEST_UNIFICATION_SPEC.md` 8절과
-`OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·10.4·13절을 따른다. 기존 1~11의 순서·브랜치·확인 문장은 유지한다.
+`OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·10.4·10.5·13절을 따른다. 기존 1~11의 순서·브랜치·확인 문장은 유지한다.
 
 Step 12의 개인 소개료 원천세는 [Console 동반 PR #23](https://github.com/yangmin9704188-max/NEXUS_Console/pull/23)의
 전용 발행 정책 API를 사용한다. 원금·소개료의 인정액, 실제 송금과 원천세를 구분하고 부분 지급·반환 후에도
@@ -111,7 +118,7 @@ Step 12의 개인 소개료 원천세는 [Console 동반 PR #23](https://github.
 - 보험 합산 범위·도입 전 이력·기초 공제/잔액·무수정 저장·월마감 차액의 기존 처리 연결 보강 | branch: codex/office-settlement-insurance-history | repo: yangmin9704188-max/jakupan_office_web | pr: 276
 - 실제 시간·상한 경고 이후 소개료 계산과 미정 근거 보완, 청구서·노임대장의 작업자·현장·월 원천 보존 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web | pr: 280
 - 대불원금·소개료·소개료 원천세의 기존 인정액·채무·실송금 연결과 부분 지급·상환·반환 대사 | branch: codex/office-agency-money-reconciliation | repo: yangmin9704188-max/jakupan_office_web | pr: 283
-- 계속고용 계약·기징수 누적 상한과 대표 거래의 양측 장부·청구·세금문서·월마감 정정명세 종단 검증 | branch: codex/office-settlement-bilateral-completion | repo: yangmin9704188-max/jakupan_office_web
+- 계속고용 계약·기징수 누적 상한과 대표 거래의 양측 장부·청구·세금문서·월마감 정정명세 종단 검증 | branch: codex/office-settlement-bilateral-completion | repo: yangmin9704188-max/jakupan_office_web | pr: 286
 
 ## 확인 항목
 
