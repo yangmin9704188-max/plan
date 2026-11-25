@@ -86,6 +86,14 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 
 ## 개발 계획
 
+2026-11-25 기준: Step 1~8의 개별 PR head는 검토 통합 브랜치
+`codex/office-demo-workflow-review-20261124`의 `1d1ba2c2dbdb8d0dfeac1349ff7fb36fc4475d0e`에
+포함되어 있다. 개별 PR은 Draft/Open이며, Step 9 #269와 Step 10 #276은 해당 검토 브랜치에
+병합됐다. 개별 PR 표시와 통합 코드의 포함 상태를 구분하며 대표의 확인·완료 상태를 자동 변경하지 않는다.
+기존 Step 11의 넓은 범위는 실제 구현 의존성에 맞춰 아래 11~13으로 나눈다.
+상세 진행 근거와 남은 범위는 Office의 `OFFICE_SITE_LABOR_REQUEST_UNIFICATION_SPEC.md` 8절과
+`OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·13절을 따른다. 기존 1~10의 순서·브랜치·확인 문장은 유지한다.
+
 - 공통 업무·금액·입력 기준과 개발 소유 정리, 견적 현장 전환 VAT 저장 누락 수정 | branch: codex/office-site-labor-terms-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 243
 - 총액/세전 공통 계산·거래별 세무 분류·소개료 한도·개인 사무소 원천세 | branch: codex/office-labor-terms-tax | repo: yangmin9704188-max/jakupan_office_web | pr: 248
 - 거래처·현장 간편 입력·업무 템플릿·보험 처리 패턴과 공통 조건·합의 버전 | branch: codex/office-labor-terms-registration | repo: yangmin9704188-max/jakupan_office_web | pr: 251
@@ -96,7 +104,9 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 - 사무소 정산 설정에 소개 수수료·정산 주기·보험 설정 및 변경 이력 연결 (공통 공수 환산·조퇴 시간별 인정·연장·야간·휴일 자동 가산 제외) | branch: codex/office-stitch-settlement-settings-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 267
 - 거래 템플릿·법령·계산·문서·보험 이력의 단일 파이프라인과 자동 QA 기준 정리 | branch: codex/office-settlement-pipeline-qa-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 269
 - 보험 합산 범위·도입 전 이력·기초 공제/잔액·무수정 저장·월마감 차액의 기존 처리 연결 보강 | branch: codex/office-settlement-insurance-history | repo: yangmin9704188-max/jakupan_office_web | pr: 276
-- 대표 거래의 인정액·청구·지급·문서 종단 자동 QA와 시간제·상한 경고 후속 계산 연결 보강 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web
+- 실제 시간·상한 경고 이후 소개료 계산과 미정 근거 보완, 청구서·노임대장의 작업자·현장·월 원천 보존 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web | pr: 280
+- 대불원금·소개료·소개료 원천세의 기존 인정액·채무·실송금 연결과 부분 지급·상환·반환 대사 | branch: codex/office-agency-money-reconciliation | repo: yangmin9704188-max/jakupan_office_web
+- 계속고용 계약·기징수 누적 상한과 대표 거래의 양측 장부·청구·세금문서·월마감 정정명세 종단 검증 | branch: codex/office-settlement-bilateral-completion | repo: yangmin9704188-max/jakupan_office_web
 
 ## 확인 항목
 
@@ -140,3 +150,6 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 - 보험 검토 → 어떤 기간·사업장·근무 이력 때문에 적용 또는 확인 필요가 됐는지와 추가로 보완할 입력 위치를 알 수 있다.
 - 보험 월마감 → 환급/추가공제 예정과 실제 처리 결과가 구분되고, 정정하면 이전 처리와 이번 차이 및 남은 금액을 이해할 수 있다.
 - 문서 준비 → 이번 거래에 필요한 서류와 누락값이 보이고, 초안·확정·실제 지급·기관 제출 완료가 서로 구별된다.
+- 업체 지급 → 시간제 근무의 실제 근로분과 확인 근거를 보완 → 계산한 소개료와 남아 있는 상한 경고를 함께 확인하고, 다시 열어 보완한 시간·근거·금액이 유지되는지 확인한다.
+- 청구서·노임대장 → 동명이인과 여러 현장·직종·달이 포함된 자료 출력 → 작업자가 섞이지 않고 앞선 달의 일별 출역과 월별 소계·전체 합계를 모두 확인할 수 있다.
+
