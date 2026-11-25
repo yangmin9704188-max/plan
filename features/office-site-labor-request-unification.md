@@ -90,7 +90,7 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 `codex/office-demo-workflow-review-20261124`의 `23a27943c3ef62b13ba4870860a25f302d08eab7`에
 포함되어 있다. Step 1~8의 개별 PR은 코드 포함을 확인한 뒤 닫았다. Step 9 #269와 Step 10 #276은 해당 검토 브랜치에
 병합됐다. Step 11 #280과 공통 지급 조회·일정 #281도 검수 브랜치에 병합했다.
-Step 12는 기존 인정액·실제 지급·지급 일정에 A/F/Q를 연결한 구현 후보이며 Step 13은 후속 개발 범위다.
+Step 12 #283은 Office 검수 브랜치에 병합했다. 대불원금·소개료·원천세를 인정액·실제 지급·지급 일정에 연결하며, 적용일은 Console의 발행 정책에서 확인한다. Console #23은 초안이고 운영 정책 발행과 Step 13은 남아 있다.
 기존 Step 11의 넓은 범위는 실제 구현 의존성에 맞춰 아래 11~13으로 나눈다.
 상세 진행 근거와 남은 범위는 Office의 `OFFICE_SITE_LABOR_REQUEST_UNIFICATION_SPEC.md` 8절과
 `OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·10.4·13절을 따른다. 기존 1~11의 순서·브랜치·확인 문장은 유지한다.

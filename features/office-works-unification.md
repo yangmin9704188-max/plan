@@ -111,7 +111,7 @@ U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://git
 
 U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. Office #279는 Works 통합 검수 브랜치에 병합했다. Worker #201은 초안이며 실제 Supabase 전체 스키마와 로그인한 Worker·Office 간 호출 검증이 남아 있다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
 
-U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pull/282)에 구현 후보를 연결했다. 실제 근무 원본의 월 공수표·별도 기간 상세, 직접 근무의 요청 복구·정정·제외/복원, 작업자·팀·업무센터의 공통 진입과 PDF/Excel 출력을 구현했다. 관련 백엔드 59건(격리 PostgreSQL 9건 포함), 웹 68건과 환경 경계 29건이 통과했다. 기존 안내 영상이 없는 환경의 전체 웹 빌드, 전체 스키마·로그인 화면·브라우저 PDF 검수는 남아 있으며 Codex 검토·검증·병합 대기 상태다. 다음 순서는 U17 지급 조건·기간 급여 계약이다.
+U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pull/282)에 구현을 연결했다. 실제 근무 원본의 월 공수표·별도 기간 상세, 직접 근무의 요청 복구·정정·제외/복원, 작업자·팀·업무센터의 공통 진입과 PDF/Excel 출력을 구현했다. 관련 백엔드 59건(격리 PostgreSQL 9건 포함), 웹 68건과 환경 경계 29건이 통과했다. Office #282는 Works 통합 검수 브랜치에 병합했다. 전체 스키마 업그레이드와 기존 데이터 보존, 직접 등록·재시도·출력의 Spring HTTP 흐름, Edge 작업내역 진입과 PDF, 웹 빌드를 확인했다. 설치된 Office와 Worker의 실계정 연결은 검증 전이다. 다음 순서는 U17 지급 조건·기간 급여 계약이다.
 
 ## 개발 계획
 
