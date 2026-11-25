@@ -87,12 +87,17 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 ## 개발 계획
 
 2026-11-25 기준: Step 1~8의 개별 PR head는 검토 통합 브랜치
-`codex/office-demo-workflow-review-20261124`의 `1d1ba2c2dbdb8d0dfeac1349ff7fb36fc4475d0e`에
+`codex/office-demo-workflow-review-20261124`의 `23a27943c3ef62b13ba4870860a25f302d08eab7`에
 포함되어 있다. Step 1~8의 개별 PR은 코드 포함을 확인한 뒤 닫았다. Step 9 #269와 Step 10 #276은 해당 검토 브랜치에
-병합됐다. Step 11 #280도 검수 브랜치에 병합했다. Step 12·13은 후속 개발 범위다.
+병합됐다. Step 11 #280과 공통 지급 조회·일정 #281도 검수 브랜치에 병합했다.
+Step 12는 기존 인정액·실제 지급·지급 일정에 A/F/Q를 연결한 구현 후보이며 Step 13은 후속 개발 범위다.
 기존 Step 11의 넓은 범위는 실제 구현 의존성에 맞춰 아래 11~13으로 나눈다.
 상세 진행 근거와 남은 범위는 Office의 `OFFICE_SITE_LABOR_REQUEST_UNIFICATION_SPEC.md` 8절과
-`OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·13절을 따른다. 기존 1~10의 순서·브랜치·확인 문장은 유지한다.
+`OFFICE_SETTLEMENT_PIPELINE_QA.md` 10.3·10.4·13절을 따른다. 기존 1~11의 순서·브랜치·확인 문장은 유지한다.
+
+Step 12의 개인 소개료 원천세는 [Console 동반 PR #23](https://github.com/yangmin9704188-max/NEXUS_Console/pull/23)의
+전용 발행 정책 API를 사용한다. 원금·소개료의 인정액, 실제 송금과 원천세를 구분하고 부분 지급·반환 후에도
+같은 성분별 잔액을 사용한다. 운영 정책 발행·설치 환경 검증과 기관 납부 완료를 대신 표시하지 않는다.
 
 - 공통 업무·금액·입력 기준과 개발 소유 정리, 견적 현장 전환 VAT 저장 누락 수정 | branch: codex/office-site-labor-terms-20261124 | repo: yangmin9704188-max/jakupan_office_web | pr: 243
 - 총액/세전 공통 계산·거래별 세무 분류·소개료 한도·개인 사무소 원천세 | branch: codex/office-labor-terms-tax | repo: yangmin9704188-max/jakupan_office_web | pr: 248
@@ -105,7 +110,7 @@ Office → 관제·출역, 정산센터 → 업체 청구 / 업체 지급의 예
 - 거래 템플릿·법령·계산·문서·보험 이력의 단일 파이프라인과 자동 QA 기준 정리 | branch: codex/office-settlement-pipeline-qa-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 269
 - 보험 합산 범위·도입 전 이력·기초 공제/잔액·무수정 저장·월마감 차액의 기존 처리 연결 보강 | branch: codex/office-settlement-insurance-history | repo: yangmin9704188-max/jakupan_office_web | pr: 276
 - 실제 시간·상한 경고 이후 소개료 계산과 미정 근거 보완, 청구서·노임대장의 작업자·현장·월 원천 보존 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web | pr: 280
-- 대불원금·소개료·소개료 원천세의 기존 인정액·채무·실송금 연결과 부분 지급·상환·반환 대사 | branch: codex/office-agency-money-reconciliation | repo: yangmin9704188-max/jakupan_office_web
+- 대불원금·소개료·소개료 원천세의 기존 인정액·채무·실송금 연결과 부분 지급·상환·반환 대사 | branch: codex/office-agency-money-reconciliation | repo: yangmin9704188-max/jakupan_office_web | pr: 283
 - 계속고용 계약·기징수 누적 상한과 대표 거래의 양측 장부·청구·세금문서·월마감 정정명세 종단 검증 | branch: codex/office-settlement-bilateral-completion | repo: yangmin9704188-max/jakupan_office_web
 
 ## 확인 항목
