@@ -124,6 +124,33 @@ Office → 견적 → 승인 견적의 현장 등록.
 54개 확인 문장은 유지한다. 새 문서만으로 구현 완료·대표 확인 상태를 바꾸지 않는다.
 Step 13의 중복 계약·귀속 정리와 대사 결과는 기존 담당 범위에서 보존하고, 후속 화면·문서가 새로운 금액 원장을 만들지 않는다.
 
+2026-11-25 후속 구현: Step 14~18의 연결 후보를 `codex/office-agency-discovery-20261125`의
+[Office Draft PR #291](https://github.com/yangmin9704188-max/jakupan_office_web/pull/291)로 묶었다.
+검증 소스는 `6d04453ae616d5d2d6c31fa3f074ba5ffa9f53ff`다.
+첫 커밋은 반경 탐색·90일 확인 실적·직접 제안·공고 지원/선정과 수락 계약,
+두 번째 커밋은 공급사 확정 출역/실지급 근거의 A+F 청구·발송 원본·정확한 기존 PAY 건 수신 연결이다.
+단계 순서와 기존 확인 문장은 유지하며, 같은 PR이 여러 단계에 연결돼도 모든 수용 기준을
+완료한 것으로 처리하지 않는다.
+
+현재 화면은 **보낸 제안 / 받은 제안 / 내 모집·지원자 / 모집 공고 / 내 지원**을 제공한다.
+수락한 요청·현장·거래처에서 **계약 보기**로 같은 합의를 열고, 공급사는 **고용알선 청구 준비·보기**,
+요청업체는 **이 계약의 받은 청구 보기**를 사용한다. 발송 원본은 양사 서류함에서 동일한 파일로 보관한다.
+수신 초안은 수락 때 만든 기존 지급 건에 연결하고, 기인정액·기지급 기록을 보존한다.
+계약 단위 실제 지급·반환은 기존 **정산 거래 명세**, 공급사 입금 확인은 기존 **수금 내역**을 사용한다.
+
+아직 남은 것은 Step 15의 불완전 작성 초안·현장 인라인 등록·전역 응답 집계,
+Step 16의 게시 조건 새 버전, Step 17의 적용일별 변경/종료 협의·CC-02 관제 수요 생성,
+Step 18의 배정 원본 없는 출역·별도 비용 합산·청구별 지급 자동 배분·수금 자동 확정이다.
+확인서·청구서의 저장 PDF와 설치 화면 검수, 청구서의 전체 공식 당사자·계좌 등 발급 필드도 남아 있다.
+Step 13 #286의 중복 계약/귀속 정리는 별도 보류 상태를 유지한다.
+
+검증은 Kotlin 운영/테스트 소스 컴파일, 관련 단위 48건·실제 DB 28건, 웹 타입 검사와 9파일
+58 테스트를 통과했다. 기존 마이그레이션 556개는 보존하고 새 3개를 실제 DB에 적용했다.
+발송 전 수정의 잘못된 근거 변경 충돌과 동시 생성·취소 후 재생성의 청구번호 중복을 수정했고,
+실제 지급 원본 보존·중복 청구·정확한 기존 지급 건 연결을 검증했다. 기능 카드 검사는 오류 0건이다.
+정식 웹 빌드는 필수 기존 가이드 영상 자산이 이 환경에 없어 차단됐다. 저장 PDF·설치 화면은
+미검수이며 병합·배포·대표 수용을 완료로 표시하지 않는다.
+
 2026-11-25 기준: Step 1~8의 개별 PR head는 검토 통합 브랜치
 `codex/office-demo-workflow-review-20261124`의 `23a27943c3ef62b13ba4870860a25f302d08eab7`에
 포함되어 있다. Step 1~8의 개별 PR은 코드 포함을 확인한 뒤 닫았다. Step 9 #269와 Step 10 #276은 해당 검토 브랜치에
@@ -159,11 +186,11 @@ Step 12의 개인 소개료 원천세는 [Console 동반 PR #23](https://github.
 - 실제 시간·상한 경고 이후 소개료 계산과 미정 근거 보완, 청구서·노임대장의 작업자·현장·월 원천 보존 | branch: codex/office-settlement-pipeline-verification | repo: yangmin9704188-max/jakupan_office_web | pr: 280
 - 대불원금·소개료·소개료 원천세의 기존 인정액·채무·실송금 연결과 부분 지급·상환·반환 대사 | branch: codex/office-agency-money-reconciliation | repo: yangmin9704188-max/jakupan_office_web | pr: 283
 - 계속고용 계약·기징수 누적 상한과 대표 거래의 양측 장부·청구·세금문서·월마감 정정명세 종단 검증 | branch: codex/office-settlement-bilateral-completion | repo: yangmin9704188-max/jakupan_office_web | pr: 286
-- 현장 반경 N km 인력사무소 탐색·최근 90일 확인 충원율·표본과 자료 부족 표시 | branch: codex/office-agency-discovery | repo: yangmin9704188-max/jakupan_office_web
-- 현장 공통 계약조건의 요청 모달·사무소 선택·직접 계약 제안·받은/보낸 요청·수정 비교와 수락 버튼 | branch: codex/office-agency-request-modal | repo: yangmin9704188-max/jakupan_office_web
-- 인력사무소 모집 공고·지원·조건 협의·여러 사무소 선정과 공통 수요의 초과 충원 방지 | branch: codex/office-agency-recruitment | repo: yangmin9704188-max/jakupan_office_web
-- 수락 계약 열람·합의 확인서·적용일별 변경과 기존 CC-02 관제 연결 | branch: codex/office-agency-agreement-surface | repo: yangmin9704188-max/jakupan_office_web
-- 사무소 청구 준비·발송과 상대 기존 정산 건·지급/수금 문서 연결 | branch: codex/office-agency-billing-documents | repo: yangmin9704188-max/jakupan_office_web
+- 현장 반경 N km 인력사무소 탐색·최근 90일 확인 충원율·표본과 자료 부족 표시 | branch: codex/office-agency-discovery-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 291
+- 현장 공통 계약조건의 요청 모달·사무소 선택·직접 계약 제안·받은/보낸 요청·수정 비교와 수락 버튼 | branch: codex/office-agency-discovery-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 291
+- 인력사무소 모집 공고·지원·조건 협의·여러 사무소 선정과 공통 수요의 초과 충원 방지 | branch: codex/office-agency-discovery-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 291
+- 수락 계약 열람·합의 확인서·적용일별 변경과 기존 CC-02 관제 연결 | branch: codex/office-agency-discovery-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 291
+- 사무소 청구 준비·발송과 상대 기존 정산 건·지급/수금 문서 연결 | branch: codex/office-agency-discovery-20261125 | repo: yangmin9704188-max/jakupan_office_web | pr: 291
 
 ## 확인 항목
 
