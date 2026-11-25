@@ -111,6 +111,8 @@ U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://git
 
 U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. Office #279는 Works 통합 검수 브랜치에 병합했다. Worker #201은 초안이며 실제 Supabase 전체 스키마와 로그인한 Worker·Office 간 호출 검증이 남아 있다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
 
+U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pull/282)에 구현 후보를 연결했다. 실제 근무 원본의 월 공수표·별도 기간 상세, 직접 근무의 요청 복구·정정·제외/복원, 작업자·팀·업무센터의 공통 진입과 PDF/Excel 출력을 구현했다. 관련 백엔드 59건(격리 PostgreSQL 9건 포함), 웹 68건과 환경 경계 29건이 통과했다. 기존 안내 영상이 없는 환경의 전체 웹 빌드, 전체 스키마·로그인 화면·브라우저 PDF 검수는 남아 있으며 Codex 검토·검증·병합 대기 상태다. 다음 순서는 U17 지급 조건·기간 급여 계약이다.
+
 ## 개발 계획
 
 - 준비 — 통합 개발 기준과 계획 확정 | branch: codex/office-works-unification-plan-20261124 | pr: 263 | repo: yangmin9704188-max/jakupan_office_web
@@ -118,7 +120,7 @@ U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pu
 - U01 작업자 태그·권한과 자체팀·외부팀 묶음·현장 참여 기반 | branch: codex/office-unify-u01-people-teams | pr: 275 | repo: yangmin9704188-max/jakupan_office_web
 - U02 선행 보정 — Worker 원본 팀 ID·참여 단건 조회 | branch: codex/office-unify-u02-worker-contract | pr: 279 | repo: yangmin9704188-max/jakupan_office_web
 - U02 Worker의 Office 팀 초대·요청·회사 전환과 사진 첫 연결 | branch: codex/office-unify-u02-team-connection | pr: 201 | repo: yangmin9704188-max/jakupan_worker_app
-- U03 실제 출역 조회 통일과 월 공수표·기간 작업내역·다운로드 | branch: codex/office-unify-u03-attendance | repo: yangmin9704188-max/jakupan_office_web
+- U03 실제 출역 조회 통일과 월 공수표·기간 작업내역·다운로드 | branch: codex/office-unify-u03-attendance | pr: 282 | repo: yangmin9704188-max/jakupan_office_web
 - U17 공수·고정급·수당과 설정형 공제·주급/월급·기지급 연결 | branch: codex/office-unify-u17-period-payroll | repo: yangmin9704188-max/jakupan_office_web
 - U04 근로계약 버전·서명/교부 기반과 업무센터 문서 용도별 진입 | branch: codex/office-unify-u04-contract-documents | repo: yangmin9704188-max/jakupan_office_web
 - U05 Worker 근로계약 확인·서명·사본과 본인 기간 지급내역 연결 | branch: codex/office-unify-u05-contract-signing | repo: yangmin9704188-max/jakupan_worker_app
