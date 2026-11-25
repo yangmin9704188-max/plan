@@ -111,7 +111,9 @@ U01 팀 이력·권한의 PostgreSQL 검증은 [작업자·팀 #275](https://git
 
 U02는 [Worker #201](https://github.com/yangmin9704188-max/jakupan_worker_app/pull/201)과 선행 계약 보정 [Office #279](https://github.com/yangmin9704188-max/jakupan_office_web/pull/279)에 구현 후보를 연결했다. Office #279는 Works 통합 검수 브랜치에 병합했다. Worker #201은 초안이며 실제 Supabase 전체 스키마와 로그인한 Worker·Office 간 호출 검증이 남아 있다. 초대 수락과 실제 작업 시작을 분리하고 정확한 참여 집합의 전환·원래 요청 복구를 구현했다. 사진은 기존 개인 배정 진입과 Office 식별자·보존 조건을 준비했으며 참여 기반 새 미디어 저장은 U07에서 적용한다.
 
-U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pull/282)에 구현을 연결했다. 실제 근무 원본의 월 공수표·별도 기간 상세, 직접 근무의 요청 복구·정정·제외/복원, 작업자·팀·업무센터의 공통 진입과 PDF/Excel 출력을 구현했다. 관련 백엔드 59건(격리 PostgreSQL 9건 포함), 웹 68건과 환경 경계 29건이 통과했다. Office #282는 Works 통합 검수 브랜치에 병합했다. 전체 스키마 업그레이드와 기존 데이터 보존, 직접 등록·재시도·출력의 Spring HTTP 흐름, Edge 작업내역 진입과 PDF, 웹 빌드를 확인했다. 설치된 Office와 Worker의 실계정 연결은 검증 전이다. 다음 순서는 U17 지급 조건·기간 급여 계약이다.
+U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pull/282)에 구현을 연결했다. 실제 근무 원본의 월 공수표·별도 기간 상세, 직접 근무의 요청 복구·정정·제외/복원, 작업자·팀·업무센터의 공통 진입과 PDF/Excel 출력을 구현했다. 관련 백엔드 59건(격리 PostgreSQL 9건 포함), 웹 68건과 환경 경계 29건이 통과했다. Office #282는 Works 통합 검수 브랜치에 병합했다. 전체 스키마 업그레이드와 기존 데이터 보존, 직접 등록·재시도·출력의 Spring HTTP 흐름, Edge 작업내역 진입과 PDF, 웹 빌드를 확인했다. 설치된 Office와 Worker의 실계정 연결은 검증 전이다. 후속 지급 조건·기간 급여는 아래 U17-A/B로 진행한다.
+
+U17-A는 [Office #284](https://github.com/yangmin9704188-max/jakupan_office_web/pull/284)에 구현 후보를 연결했다. U03가 병합된 통합 브랜치 기준으로 회사·작업자·현장의 효력별 지급 조건, 실제 근무 기반 공수/일급/시급·고정급, 수당·설정형 공제, 변경 불가능한 산출 저장과 같은 원본의 PDF 인쇄·Excel 출력을 구현했다. 최종 후보의 관련 백엔드 31건(실제 PostgreSQL 5건 포함, 건너뜀 0), 웹 30건, 웹 타입 검사와 신규 migration 검사가 통과했다. PR은 초안이며 Codex의 전체 스키마·Spring HTTP 흐름, 실제 로그인 화면·PDF 육안 확인과 정상 자산을 갖춘 환경의 production build 검수가 남았다. 산출 저장은 새 채무·지급 완료가 아니며 실제 기지급·잔액은 미연결로 남긴다. 다음 U17-B에서 기존 정산·실제 지급·부분 지급·선지급·반환·차액과 Worker 지급 조회를 연결한다. U17 전체 목표와 아래 확인 항목은 유지한다.
 
 ## 개발 계획
 
@@ -121,7 +123,8 @@ U03는 [Office #282](https://github.com/yangmin9704188-max/jakupan_office_web/pu
 - U02 선행 보정 — Worker 원본 팀 ID·참여 단건 조회 | branch: codex/office-unify-u02-worker-contract | pr: 279 | repo: yangmin9704188-max/jakupan_office_web
 - U02 Worker의 Office 팀 초대·요청·회사 전환과 사진 첫 연결 | branch: codex/office-unify-u02-team-connection | pr: 201 | repo: yangmin9704188-max/jakupan_worker_app
 - U03 실제 출역 조회 통일과 월 공수표·기간 작업내역·다운로드 | branch: codex/office-unify-u03-attendance | pr: 282 | repo: yangmin9704188-max/jakupan_office_web
-- U17 공수·고정급·수당과 설정형 공제·주급/월급·기지급 연결 | branch: codex/office-unify-u17-period-payroll | repo: yangmin9704188-max/jakupan_office_web
+- U17-A 지급 조건·공수/고정급·수당·설정형 공제·기간 산출 저장·출력 | branch: codex/office-unify-u17-period-payroll | pr: 284 | repo: yangmin9704188-max/jakupan_office_web
+- U17-B 기존 정산·실제 지급·부분 지급·선지급·반환·차액과 Worker 지급 조회 연결 | branch: codex/office-unify-u17-payout-connection | repo: yangmin9704188-max/jakupan_office_web
 - U04 근로계약 버전·서명/교부 기반과 업무센터 문서 용도별 진입 | branch: codex/office-unify-u04-contract-documents | repo: yangmin9704188-max/jakupan_office_web
 - U05 Worker 근로계약 확인·서명·사본과 본인 기간 지급내역 연결 | branch: codex/office-unify-u05-contract-signing | repo: yangmin9704188-max/jakupan_worker_app
 - U18 Office 팀 도급/개별 지급 계약·청구 서류와 기존 PAY 연결 | branch: codex/office-unify-u18-team-contracts | repo: yangmin9704188-max/jakupan_office_web
