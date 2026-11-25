@@ -119,6 +119,8 @@ U17-B는 [Office #288](https://github.com/yangmin9704188-max/jakupan_office_web/
 
 Worker #202는 초안이다. 같은 계정의 연결 사무소나 근로자가 바뀌어도 상세 화면이 직전 급여를 최대 30초 동안 다시 쓸 수 있다. 상세 캐시를 연결 사무소·근로자 단위로 분리하고 기존 테스트 기대값 두 곳을 갱신해야 한다. Worker 전체 모바일 타입 검사와 실제 로그인한 Office·Worker 연결은 미검증이다. 4173에는 이번 기간 급여 변경을 적용하지 않았다.
 
+U04는 [Office #289](https://github.com/yangmin9704188-max/jakupan_office_web/pull/289)에 초안 구현을 연결했다. Office #288이 병합된 통합 기준(a4ffd479)에서 작업자 조건·근로계약, 기간 정함 없음·기간제·단시간 서식, 최초/변경/연장 버전, 본문·수신자 고정, 거절 사유·시각, 기존 Check 서명 증거와 불변 PDF를 구현했다. 서명 완료와 전자 사본 수령을 구별하고, 종이 원본 회수·직접 교부 사실을 별도로 보존한다. 업무센터의 제출·보관·근로자 교부는 기존 원본과 조회 화면을 재사용한다. 관련 백엔드 증거는 최종 계약 11건과 변경 영향 없는 권한·서명·보존 71건으로 총 82건이며 실제 PostgreSQL 4건을 포함한다. 웹 69건·타입 검사, 신규 migration 불변성, 문서 기능 카드와 UTF-8 검사가 통과했다. 전자 체결본과 긴 한글 약정 확인본의 PDF 4페이지를 직접 확인했다. 기존 가이드 영상이 없어 제품 빌드는 중단됐고, 전체 스키마 업그레이드·실제 Spring/JWT 계약 호출·설치된 Office/Worker 연결은 검증 전이다. Worker 본인 확인·서명·사본 화면과 소속 종료 후 실계정 접근은 U05에서 연결한다. 병합·배포는 수행하지 않았다.
+
 ## 개발 계획
 
 - 준비 — 통합 개발 기준과 계획 확정 | branch: codex/office-works-unification-plan-20261124 | pr: 263 | repo: yangmin9704188-max/jakupan_office_web
@@ -130,7 +132,7 @@ Worker #202는 초안이다. 같은 계정의 연결 사무소나 근로자가 �
 - U17-A 지급 조건·공수/고정급·수당·설정형 공제·기간 산출 저장·출력 | branch: codex/office-unify-u17-period-payroll | pr: 284 | repo: yangmin9704188-max/jakupan_office_web
 - U17-B 기존 정산·실제 지급·부분 지급·선지급·반환·차액과 Worker 지급 조회 연결 | branch: codex/office-unify-u17-payout-connection | pr: 288 | repo: yangmin9704188-max/jakupan_office_web
 - U17-B Worker 현재 기간 급여·실제 지급·잔액과 선택 월·원본 상세 조회 | branch: codex/office-unify-u17-worker-payroll | pr: 202 | repo: yangmin9704188-max/jakupan_worker_app
-- U04 근로계약 버전·서명/교부 기반과 업무센터 문서 용도별 진입 | branch: codex/office-unify-u04-contract-documents | repo: yangmin9704188-max/jakupan_office_web
+- U04 근로계약 버전·서명/교부 기반과 업무센터 문서 용도별 진입 | branch: codex/office-unify-u04-contract-documents | pr: 289 | repo: yangmin9704188-max/jakupan_office_web
 - U05 Worker 근로계약 확인·서명·사본과 본인 기간 지급내역 연결 | branch: codex/office-unify-u05-contract-signing | repo: yangmin9704188-max/jakupan_worker_app
 - U18 Office 팀 도급/개별 지급 계약·청구 서류와 기존 PAY 연결 | branch: codex/office-unify-u18-team-contracts | repo: yangmin9704188-max/jakupan_office_web
 - U19 Worker 기존 팀 매출의 Office 계약·청구·지급/수금 연결 | branch: codex/office-unify-u19-team-revenue | repo: yangmin9704188-max/jakupan_worker_app
@@ -189,3 +191,4 @@ Worker #202는 초안이다. 같은 계정의 연결 사무소나 근로자가 �
 - Office 지급 통지와 Worker의 수동 수금을 대조·연결할 수 있고 청구액·인정액·지급액·수금액을 구분한다.
 - 소장이 외부팀의 사진·보고 권한을 바꾸면 지정 현장·기간·대상에만 적용되고 과거 자료와 다른 회사 자료는 바뀌지 않는다.
 - 팀의 회사 이동 뒤에도 이전 회사의 계약·청구·미수금이 남고 팀장은 권한 없는 개인 급여·계약을 볼 수 없다.
+
